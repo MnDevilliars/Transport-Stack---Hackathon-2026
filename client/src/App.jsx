@@ -227,6 +227,7 @@ export default function App() {
                 liveBuses={liveBuses}
                 originId={originId}
                 destinationId={destinationId}
+                mobileTab={mobileTab}
               />
             </div>
           </main>

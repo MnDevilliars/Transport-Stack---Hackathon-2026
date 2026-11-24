@@ -6,10 +6,12 @@ export default function TransitMap({
   selectedOption,
   liveBuses,
   originId,
-  destinationId
+  destinationId,
+  mobileTab = 'planner'
 }) {
   const mapContainerRef = useRef(null);
   const mapInstanceRef = useRef(null);
+  const boundsRef = useRef([]);
   const layersRef = useRef({
     routeHaloPolylines: [],
     routePolylines: [],
@@ -28,19 +30,62 @@ export default function TransitMap({
       zoomControl: true
     });
 
-    // Clean, crisp OpenStreetMap tiles (No Watermark, 100% Free)
+    // Clean, crisp OpenStreetMap tiles with aggressive buffer preloading
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      maxZoom: 19
+      maxZoom: 19,
+      keepBuffer: 8,
+      updateWhenIdle: false,
+      updateWhenZooming: false
     }).addTo(map);
 
     mapInstanceRef.current = map;
+
+    // Trigger initial size check
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 150);
 
     return () => {
       map.remove();
       mapInstanceRef.current = null;
     };
   }, []);
+
+  // ResizeObserver to handle container size / tab visibility changes automatically
+  useEffect(() => {
+    if (!mapContainerRef.current) return;
+    const ro = new ResizeObserver(() => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.invalidateSize();
+      }
+    });
+    ro.observe(mapContainerRef.current);
+    return () => ro.disconnect();
+  }, []);
+
+  // Whenever mobileTab or window size changes, invalidate size and re-fit bounds
+  useEffect(() => {
+    const map = mapInstanceRef.current;
+    if (!map) return;
+
+    map.invalidateSize();
+    const t1 = setTimeout(() => {
+      map.invalidateSize();
+      if (boundsRef.current && boundsRef.current.length > 0) {
+        map.fitBounds(boundsRef.current, { padding: [40, 40], maxZoom: 14 });
+      }
+    }, 100);
+
+    const t2 = setTimeout(() => {
+      map.invalidateSize();
+    }, 300);
+
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
+  }, [mobileTab]);
 
   // Update Route Polylines and Stop Markers when selectedOption or stops change
   useEffect(() => {
@@ -220,6 +265,7 @@ export default function TransitMap({
       });
 
       // Fit map bounds to view the full journey
+      boundsRef.current = boundsLatLngs;
       if (boundsLatLngs.length > 0) {
         map.fitBounds(boundsLatLngs, { padding: [60, 60], maxZoom: 14 });
       }
