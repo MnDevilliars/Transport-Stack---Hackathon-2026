@@ -52,7 +52,7 @@ export default function JourneyPlannerCard({
             <div className="w-3.5 h-3.5 rounded-full bg-blue-500 ring-4 ring-blue-100 flex-shrink-0" />
             <div className="flex-1 min-w-0">
               <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 block">
-                From (My Boarding Location)
+                Kahan Se (Boarding Stop)
               </span>
               <select
                 value={originId}
@@ -88,7 +88,7 @@ export default function JourneyPlannerCard({
             <div className="w-3.5 h-3.5 rounded-full bg-orange-500 ring-4 ring-orange-100 flex-shrink-0" />
             <div className="flex-1 min-w-0">
               <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 block">
-                To (Alighting Destination)
+                Kahan Tak (Destination Stop)
               </span>
               <select
                 value={destinationId}
@@ -132,7 +132,7 @@ export default function JourneyPlannerCard({
           <label className="flex items-center justify-between text-xs font-semibold text-slate-600 mb-2">
             <span className="flex items-center gap-1.5">
               <Clock className="w-3.5 h-3.5 text-emerald-600" />
-              Departure Time (Spatio-Temporal Model)
+              Nikalne ka Samay (Departure Time):
             </span>
           </label>
           <div className="grid grid-cols-2 gap-2">
@@ -152,7 +152,7 @@ export default function JourneyPlannerCard({
                     : "bg-white border-slate-200 text-slate-600 hover:bg-slate-100"
                 }`}
               >
-                Peak (18:30)
+                Shaam Peak (18:30)
               </button>
               <button
                 type="button"
@@ -163,7 +163,7 @@ export default function JourneyPlannerCard({
                     : "bg-white border-slate-200 text-slate-600 hover:bg-slate-100"
                 }`}
               >
-                Morning
+                Subah (09:15)
               </button>
             </div>
           </div>
@@ -179,12 +179,12 @@ export default function JourneyPlannerCard({
           {isLoading ? (
             <>
               <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-              <span>Analyzing Delhi Congestion...</span>
+              <span>Delhi Traffic Check Ho Raha Hai...</span>
             </>
           ) : (
             <>
               <Sparkles className="w-4 h-4" />
-              <span>Compute Bus Reality ETA & Routes</span>
+              <span>Bus Route & Asali Time Dekhein</span>
             </>
           )}
         </button>

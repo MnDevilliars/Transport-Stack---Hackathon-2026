@@ -162,6 +162,7 @@ export default function App() {
                   journeyOptions={journeyPlan.journeyOptions}
                   selectedOptionId={selectedOptionId}
                   onSelectOption={setSelectedOptionId}
+                  liveBuses={liveBuses}
                 />
               )}
             </div>
