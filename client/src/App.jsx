@@ -16,6 +16,7 @@ export default function App() {
   const [originId, setOriginId] = useState('STP_AIIMS');
   const [destinationId, setDestinationId] = useState('STP_KG_ISBT');
   const [departureTime, setDepartureTime] = useState('18:30');
+  const [activeMode, setActiveMode] = useState('bus');
 
   const [isLoading, setIsLoading] = useState(false);
   const [journeyPlan, setJourneyPlan] = useState(null);
@@ -63,16 +64,23 @@ export default function App() {
   }, []);
 
   // Journey Calculation Handler
-  const handleCalculatePlan = async () => {
+  const handleCalculatePlan = async (customMode = null) => {
     if (!originId || !destinationId) return;
     setIsLoading(true);
     setErrorMsg(null);
+
+    const modeToUse = customMode || activeMode;
 
     try {
       const res = await fetch('/api/v1/plan', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ originId, destinationId, departureTime })
+        body: JSON.stringify({
+          originId,
+          destinationId,
+          departureTime,
+          mode: modeToUse
+        })
       });
 
       const json = await res.json();
@@ -82,7 +90,7 @@ export default function App() {
           setSelectedOptionId(json.data.journeyOptions[0].id);
         }
       } else {
-        setErrorMsg(json.error || 'No feasible bus routes found between selected stops.');
+        setErrorMsg(json.error || 'No feasible transit routes found between selected stops.');
         setJourneyPlan(null);
       }
     } catch (err) {
@@ -92,12 +100,12 @@ export default function App() {
     }
   };
 
-  // Run initial plan once stops are loaded
+  // Run initial plan once stops are loaded, and when mode changes
   useEffect(() => {
-    if (stops.length > 0 && !journeyPlan) {
+    if (stops.length > 0) {
       handleCalculatePlan();
     }
-  }, [stops]);
+  }, [stops, activeMode]);
 
   // Selected Option Helper
   const selectedOption = journeyPlan?.journeyOptions?.find(
@@ -121,7 +129,9 @@ export default function App() {
             setDestinationId={setDestinationId}
             departureTime={departureTime}
             setDepartureTime={setDepartureTime}
-            onCalculate={handleCalculatePlan}
+            activeMode={activeMode}
+            setActiveMode={setActiveMode}
+            onCalculate={() => handleCalculatePlan()}
             isLoading={isLoading}
           />
 

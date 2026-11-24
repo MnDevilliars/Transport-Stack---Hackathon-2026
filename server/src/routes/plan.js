@@ -9,7 +9,7 @@ const DELHI_STOPS = require("../data/delhiStops");
  */
 router.post("/plan", (req, res) => {
   try {
-    const { originId, destinationId, departureTime } = req.body;
+    const { originId, destinationId, departureTime, mode } = req.body;
 
     if (!originId || !destinationId) {
       return res.status(400).json({
@@ -32,7 +32,7 @@ router.post("/plan", (req, res) => {
       });
     }
 
-    const plan = planJourney(originId, destinationId, departureTime);
+    const plan = planJourney(originId, destinationId, departureTime, mode || "bus");
     return res.json({
       success: true,
       data: plan

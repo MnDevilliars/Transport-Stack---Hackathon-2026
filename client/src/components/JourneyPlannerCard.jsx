@@ -18,6 +18,8 @@ export default function JourneyPlannerCard({
   setDestinationId,
   departureTime,
   setDepartureTime,
+  activeMode,
+  setActiveMode,
   onCalculate,
   isLoading
 }) {
@@ -29,25 +31,40 @@ export default function JourneyPlannerCard({
 
   return (
     <div className="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-sm hover:shadow-md transition-all">
-      {/* Mode Selector Tabs (Matching Reference Image 2) */}
+      {/* Mode Selector Tabs (Fully Functional Multi-Modal Transit) */}
       <div className="flex items-center gap-2 mb-5 p-1 bg-slate-100/80 rounded-2xl">
         <button
           type="button"
-          className="flex-1 py-2 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 bg-sky-500 text-white shadow-md shadow-sky-500/25 transition"
+          onClick={() => setActiveMode('bus')}
+          className={`flex-1 py-2 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition ${
+            activeMode === 'bus'
+              ? 'bg-sky-500 text-white shadow-md shadow-sky-500/25'
+              : 'text-slate-600 hover:text-slate-900'
+          }`}
         >
           <Bus className="w-4 h-4" />
           <span>DTC Bus</span>
         </button>
         <button
           type="button"
-          className="flex-1 py-2 px-3 rounded-xl font-semibold text-xs flex items-center justify-center gap-1.5 text-slate-500 hover:text-slate-800 transition"
+          onClick={() => setActiveMode('cab')}
+          className={`flex-1 py-2 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition ${
+            activeMode === 'cab'
+              ? 'bg-amber-500 text-white shadow-md shadow-amber-500/25'
+              : 'text-slate-600 hover:text-slate-900'
+          }`}
         >
           <Car className="w-4 h-4" />
           <span>Cab / Auto</span>
         </button>
         <button
           type="button"
-          className="flex-1 py-2 px-3 rounded-xl font-semibold text-xs flex items-center justify-center gap-1.5 text-slate-500 hover:text-slate-800 transition"
+          onClick={() => setActiveMode('metro')}
+          className={`flex-1 py-2 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition ${
+            activeMode === 'metro'
+              ? 'bg-red-500 text-white shadow-md shadow-red-500/25'
+              : 'text-slate-600 hover:text-slate-900'
+          }`}
         >
           <Train className="w-4 h-4" />
           <span>Metro</span>
