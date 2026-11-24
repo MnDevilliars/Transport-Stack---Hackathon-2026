@@ -1,0 +1,16 @@
+{
+  "name": "transitpulse-delhi-server",
+  "version": "1.0.0",
+  "description": "Production REST API & Spatio-Temporal Bus Traffic Routing Engine for Delhi Transit",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "morgan": "^1.10.0"
+  }
+}

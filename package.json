@@ -1,0 +1,13 @@
+{
+  "name": "transitpulse-delhi",
+  "version": "1.0.0",
+  "description": "TransitPulse Delhi - Real-Time Bus Traffic Model & Journey Planner for Transport Stack Hackathon 2026",
+  "scripts": {
+    "start": "node run.js",
+    "dev": "node run.js",
+    "server": "npm --prefix server start",
+    "client": "npm --prefix client dev"
+  },
+  "author": "Md Noorain Ansari (MnDevilliars)",
+  "license": "MIT"
+}
