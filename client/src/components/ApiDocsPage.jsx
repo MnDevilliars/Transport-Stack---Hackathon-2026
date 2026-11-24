@@ -80,7 +80,7 @@ export default function ApiDocsPage({ onBackToMap }) {
       id: 'plan',
       method: 'POST',
       path: '/api/v1/plan',
-      name: 'Spatio-Temporal Journey Planning & Reality Benchmark',
+      name: 'Journey Planning & Reality Benchmark',
       description:
         'Computes reality-calibrated bus journeys between any two Delhi transit hubs. Integrates dynamic segment velocities, dwell times, and generates a 3-way benchmark comparison against DTC static timetables and Google Maps car speeds.',
       hackathonRequirement: 'Problem 01 Core: Realistic Bus Travel Time & Journey Planner',
@@ -163,7 +163,7 @@ export default function ApiDocsPage({ onBackToMap }) {
       id: 'corridors',
       method: 'GET',
       path: '/api/v1/corridors',
-      name: 'Delhi Arterial Corridor Velocity & Congestion Index',
+      name: 'Arterial Corridor Velocity & Congestion Index',
       description:
         'Returns real-time vehicle velocity, free-flow baseline speeds, and congestion indices across key Delhi corridors (Ring Road, Vikas Marg, Outer Ring Road, Mathura Road, Rohtak Road).',
       hackathonRequirement: 'Problem 01 Feature: Delhi Arterial Traffic Model & Bottleneck Detection',
@@ -242,47 +242,47 @@ export default function ApiDocsPage({ onBackToMap }) {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 pb-20">
-      {/* Top Banner & Navigation */}
-      <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white border-b border-slate-700/60 sticky top-0 z-40 px-4 lg:px-8 py-4 shadow-xl">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
+      {/* Top Banner & Navigation (Mobile-First) */}
+      <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white border-b border-slate-700/60 sticky top-0 z-40 px-3 sm:px-6 lg:px-8 py-3 sm:py-4 shadow-xl">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+          <div className="flex items-center gap-2.5 sm:gap-3 w-full sm:w-auto">
             <button
               onClick={onBackToMap}
-              className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs transition shadow-md hover:shadow-emerald-500/20 active:scale-95"
+              className="flex items-center gap-1.5 px-3 py-1.5 sm:py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition shadow-md hover:shadow-emerald-500/20 active:scale-95 whitespace-nowrap flex-shrink-0"
             >
-              <ArrowLeft className="w-4 h-4" />
-              <span>Back to Live Map</span>
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Back to Map</span>
             </button>
-            <div className="h-6 w-px bg-slate-700" />
-            <div>
-              <div className="flex items-center gap-2">
-                <Code2 className="w-5 h-5 text-emerald-400" />
-                <h1 className="font-extrabold text-base md:text-lg tracking-tight">
-                  TransitPulse API & Hackathon Specification
+            <div className="h-5 w-px bg-slate-700 flex-shrink-0" />
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2 flex-wrap">
+                <Code2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                <h1 className="font-extrabold text-sm sm:text-base md:text-lg tracking-tight truncate">
+                  API & Hackathon Spec
                 </h1>
-                <span className="hidden sm:inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-full">
+                <span className="px-1.5 py-0.2 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-full whitespace-nowrap">
                   Problem 01
                 </span>
               </div>
-              <p className="text-xs text-slate-400">
-                Transport Stack Delhi Hackathon 2026 • IIIT Delhi & Where U Elevate
+              <p className="text-[10px] sm:text-xs text-slate-400 truncate hidden xs:block sm:block">
+                Transport Stack Delhi 2026 • IIIT Delhi & Where U Elevate
               </p>
             </div>
           </div>
 
           {/* Quick Badges */}
-          <div className="flex items-center gap-2 text-xs">
-            <span className="px-2.5 py-1 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 font-mono text-[11px]">
-              Base URL: <span className="text-emerald-400 font-semibold">http://localhost:5001</span>
+          <div className="flex items-center gap-2 text-xs self-end sm:self-auto">
+            <span className="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 font-mono text-[10px] sm:text-[11px] whitespace-nowrap">
+              Base: <span className="text-emerald-400 font-semibold">http://localhost:5001</span>
             </span>
           </div>
         </div>
 
-        {/* Tab Switcher */}
-        <div className="max-w-7xl mx-auto flex items-center gap-2 mt-4 pt-3 border-t border-slate-800 overflow-x-auto text-xs font-medium">
+        {/* Tab Switcher (Horizontal Touch Scroll with Hidden Scrollbar) */}
+        <div className="max-w-7xl mx-auto flex items-center gap-1.5 sm:gap-2 mt-3 pt-2.5 border-t border-slate-800 overflow-x-auto text-[11px] sm:text-xs font-medium scrollbar-none whitespace-nowrap">
           <button
             onClick={() => setActiveTab('explorer')}
-            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg transition ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition whitespace-nowrap ${
               activeTab === 'explorer'
                 ? 'bg-emerald-500 text-white font-semibold shadow-sm'
                 : 'text-slate-400 hover:text-white hover:bg-slate-800'
@@ -294,67 +294,63 @@ export default function ApiDocsPage({ onBackToMap }) {
 
           <button
             onClick={() => setActiveTab('math')}
-            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg transition ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition whitespace-nowrap ${
               activeTab === 'math'
                 ? 'bg-emerald-500 text-white font-semibold shadow-sm'
                 : 'text-slate-400 hover:text-white hover:bg-slate-800'
             }`}
           >
             <Cpu className="w-3.5 h-3.5" />
-            <span>Traffic Physics & Math Model</span>
+            <span>Traffic Physics & Math</span>
           </button>
 
           <button
             onClick={() => setActiveTab('checklist')}
-            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg transition ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition whitespace-nowrap ${
               activeTab === 'checklist'
                 ? 'bg-emerald-500 text-white font-semibold shadow-sm'
                 : 'text-slate-400 hover:text-white hover:bg-slate-800'
             }`}
           >
             <CheckCircle2 className="w-3.5 h-3.5" />
-            <span>Problem 01 Hackathon Checklist</span>
+            <span>Problem 01 Checklist</span>
           </button>
 
           <button
             onClick={() => setActiveTab('datasets')}
-            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg transition ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition whitespace-nowrap ${
               activeTab === 'datasets'
                 ? 'bg-emerald-500 text-white font-semibold shadow-sm'
                 : 'text-slate-400 hover:text-white hover:bg-slate-800'
             }`}
           >
             <Database className="w-3.5 h-3.5" />
-            <span>Datasets & Road Snapping</span>
+            <span>Datasets & Roads</span>
           </button>
         </div>
       </div>
 
       {/* Main Container */}
-      <div className="max-w-7xl mx-auto px-4 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8">
         {/* ================= TAB 1: INTERACTIVE API EXPLORER ================= */}
         {activeTab === 'explorer' && (
-          <div className="space-y-8">
-            <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-                    <Zap className="w-5 h-5 text-emerald-600" />
-                    Live REST API Endpoints & Interactive Testing
-                  </h2>
-                  <p className="text-sm text-slate-600 mt-1">
-                    Directly execute and test our backend microservices running on{' '}
-                    <code className="text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-mono text-xs font-semibold">
-                      http://localhost:5001
-                    </code>
-                    . Click <b>"Execute Live Call"</b> on any endpoint below to get live real-time JSON responses!
-                  </p>
-                </div>
-              </div>
+          <div className="space-y-6 sm:space-y-8">
+            <div className="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm">
+              <h2 className="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
+                <Zap className="w-5 h-5 text-emerald-600 flex-shrink-0" />
+                <span>Live REST API Endpoints & Interactive Testing</span>
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-600 mt-1">
+                Directly execute and test our backend microservices running on{' '}
+                <code className="text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-mono text-xs font-semibold">
+                  http://localhost:5001
+                </code>
+                . Click <b>"Execute Live Call"</b> on any endpoint to get real-time JSON responses!
+              </p>
             </div>
 
             {/* Endpoints List */}
-            <div className="space-y-6">
+            <div className="space-y-5 sm:space-y-6">
               {endpoints.map((ep, idx) => {
                 const liveResult = apiOutputs[ep.id];
                 const isCalling = apiLoading[ep.id];
@@ -365,10 +361,10 @@ export default function ApiDocsPage({ onBackToMap }) {
                     className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden transition hover:border-slate-300"
                   >
                     {/* Header */}
-                    <div className="p-5 md:p-6 bg-slate-50/70 border-b border-slate-200/80 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                      <div className="flex items-start md:items-center gap-3">
+                    <div className="p-4 sm:p-6 bg-slate-50/70 border-b border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+                      <div className="flex items-start sm:items-center gap-2.5 sm:gap-3 min-w-0">
                         <span
-                          className={`px-3 py-1 text-xs font-extrabold font-mono rounded-lg uppercase tracking-wider ${
+                          className={`px-2.5 py-1 text-[11px] font-extrabold font-mono rounded-lg uppercase tracking-wider flex-shrink-0 ${
                             ep.method === 'POST'
                               ? 'bg-blue-600 text-white shadow-sm'
                               : 'bg-emerald-600 text-white shadow-sm'
@@ -376,26 +372,28 @@ export default function ApiDocsPage({ onBackToMap }) {
                         >
                           {ep.method}
                         </span>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <span className="font-mono text-base font-bold text-slate-900">{ep.path}</span>
-                            <span className="text-xs px-2 py-0.5 rounded-full bg-slate-200 text-slate-700 font-medium hidden sm:inline-block">
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="font-mono text-sm sm:text-base font-bold text-slate-900 break-all sm:break-normal">
+                              {ep.path}
+                            </span>
+                            <span className="text-[10px] sm:text-xs px-2 py-0.5 rounded-full bg-slate-200 text-slate-700 font-medium hidden sm:inline-block">
                               {ep.name}
                             </span>
                           </div>
-                          <span className="text-xs text-emerald-700 font-medium flex items-center gap-1 mt-0.5">
-                            <Sparkles className="w-3 h-3" /> {ep.hackathonRequirement}
+                          <span className="text-[11px] text-emerald-700 font-medium flex items-center gap-1 mt-0.5">
+                            <Sparkles className="w-3 h-3 flex-shrink-0" /> {ep.hackathonRequirement}
                           </span>
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-2 self-end md:self-auto">
+                      <div className="w-full sm:w-auto self-end sm:self-auto flex-shrink-0 pt-1 sm:pt-0">
                         <button
                           onClick={() =>
                             executeApiCall(ep.id, ep.path, ep.method, ep.sampleBody || null)
                           }
                           disabled={isCalling}
-                          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 active:scale-95 text-white font-semibold text-xs shadow-sm transition disabled:opacity-50"
+                          className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 active:scale-95 text-white font-semibold text-xs shadow-sm transition disabled:opacity-50"
                         >
                           <Play className={`w-3.5 h-3.5 ${isCalling ? 'animate-spin' : 'text-emerald-400'}`} />
                           <span>{isCalling ? 'Executing...' : 'Execute Live Call'}</span>
@@ -404,17 +402,17 @@ export default function ApiDocsPage({ onBackToMap }) {
                     </div>
 
                     {/* Body */}
-                    <div className="p-5 md:p-6 space-y-5">
-                      <p className="text-sm text-slate-700 leading-relaxed">{ep.description}</p>
+                    <div className="p-4 sm:p-6 space-y-4 sm:space-y-5">
+                      <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">{ep.description}</p>
 
-                      {/* Params Table */}
+                      {/* Params Table (Horizontally Scrollable with safe min-width) */}
                       {ep.params.length > 0 && (
                         <div>
-                          <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+                          <h4 className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">
                             Request Parameters
                           </h4>
-                          <div className="overflow-x-auto border border-slate-200 rounded-xl">
-                            <table className="w-full text-left text-xs">
+                          <div className="overflow-x-auto border border-slate-200 rounded-xl scrollbar-none">
+                            <table className="w-full text-left text-xs min-w-[500px]">
                               <thead className="bg-slate-50 text-slate-600 border-b border-slate-200">
                                 <tr>
                                   <th className="py-2 px-3 font-semibold">Parameter</th>
@@ -451,13 +449,13 @@ export default function ApiDocsPage({ onBackToMap }) {
                       {/* cURL Snippet */}
                       <div>
                         <div className="flex items-center justify-between mb-1.5">
-                          <span className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+                          <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
                             <Terminal className="w-3.5 h-3.5 text-slate-400" />
                             cURL Command (Direct Terminal Test)
                           </span>
                           <button
                             onClick={() => copyToClipboard(ep.curl, idx)}
-                            className="flex items-center gap-1 text-xs text-emerald-600 hover:text-emerald-700 font-medium"
+                            className="flex items-center gap-1 text-xs text-emerald-600 hover:text-emerald-700 font-medium active:scale-95"
                           >
                             {copiedIndex === idx ? (
                               <>
@@ -470,7 +468,7 @@ export default function ApiDocsPage({ onBackToMap }) {
                             )}
                           </button>
                         </div>
-                        <pre className="bg-slate-900 text-slate-200 text-xs p-3.5 rounded-xl font-mono overflow-x-auto leading-relaxed border border-slate-800">
+                        <pre className="bg-slate-900 text-slate-200 text-[11px] sm:text-xs p-3 sm:p-3.5 rounded-xl font-mono overflow-x-auto leading-relaxed border border-slate-800">
                           {ep.curl}
                         </pre>
                       </div>
@@ -478,9 +476,9 @@ export default function ApiDocsPage({ onBackToMap }) {
                       {/* Live Output Section */}
                       {liveResult && (
                         <div className="mt-4 pt-4 border-t border-slate-200">
-                          <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center justify-between mb-2 flex-wrap gap-1">
                             <div className="flex items-center gap-2">
-                              <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                              <span className="text-[11px] font-bold text-slate-700 uppercase tracking-wider">
                                 Live Server Response
                               </span>
                               <span
@@ -496,9 +494,9 @@ export default function ApiDocsPage({ onBackToMap }) {
                                 Latency: {liveResult.durationMs}ms
                               </span>
                             </div>
-                            <span className="text-[11px] text-slate-400">Response from running Node backend</span>
+                            <span className="text-[10px] text-slate-400">Node.js Express Backend</span>
                           </div>
-                          <pre className="bg-slate-950 text-emerald-400 text-xs p-4 rounded-xl font-mono overflow-x-auto max-h-72 border border-slate-800">
+                          <pre className="bg-slate-950 text-emerald-400 text-[10px] sm:text-xs p-3 sm:p-4 rounded-xl font-mono overflow-x-auto max-h-72 border border-slate-800">
                             {JSON.stringify(liveResult.data || liveResult.error, null, 2)}
                           </pre>
                         </div>
@@ -513,29 +511,29 @@ export default function ApiDocsPage({ onBackToMap }) {
 
         {/* ================= TAB 2: SPATIO-TEMPORAL MATH & PHYSICS ================= */}
         {activeTab === 'math' && (
-          <div className="space-y-8">
-            <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm">
-              <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-                <Cpu className="w-5 h-5 text-emerald-600" />
-                Mathematical Modeling & Spatio-Temporal Physics
+          <div className="space-y-6 sm:space-y-8">
+            <div className="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm">
+              <h2 className="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
+                <Cpu className="w-5 h-5 text-emerald-600 flex-shrink-0" />
+                <span>Mathematical Modeling & Spatio-Temporal Physics</span>
               </h2>
-              <p className="text-sm text-slate-600 mt-1">
+              <p className="text-xs sm:text-sm text-slate-600 mt-1">
                 How TransitPulse Delhi translates raw GPS traces, dwell physics, and corridor speed decay into
                 realistic bus arrival times.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
               {/* Formula 1 */}
-              <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+              <div className="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm space-y-3 sm:space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="px-2.5 py-1 text-xs font-bold bg-emerald-100 text-emerald-800 rounded-lg">
                     Formula 01
                   </span>
-                  <span className="text-xs font-semibold text-slate-400">Real-Time GPS Decay Blending</span>
+                  <span className="text-[11px] font-semibold text-slate-400">GPS Decay Blending</span>
                 </div>
-                <h3 className="text-base font-bold text-slate-900">Effective Segment Velocity Equation</h3>
-                <div className="bg-slate-900 text-emerald-300 font-mono text-sm p-4 rounded-xl text-center border border-slate-800 shadow-inner">
+                <h3 className="text-sm sm:text-base font-bold text-slate-900">Effective Segment Velocity Equation</h3>
+                <div className="bg-slate-900 text-emerald-300 font-mono text-xs sm:text-sm p-3.5 sm:p-4 rounded-xl text-center border border-slate-800 shadow-inner break-words">
                   v_effective = α · v_live + (1 - α) · v_historical(t)
                 </div>
                 <p className="text-xs text-slate-600 leading-relaxed">
@@ -545,15 +543,15 @@ export default function ApiDocsPage({ onBackToMap }) {
               </div>
 
               {/* Formula 2 */}
-              <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+              <div className="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm space-y-3 sm:space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="px-2.5 py-1 text-xs font-bold bg-blue-100 text-blue-800 rounded-lg">
                     Formula 02
                   </span>
-                  <span className="text-xs font-semibold text-slate-400">Boarding Delays</span>
+                  <span className="text-[11px] font-semibold text-slate-400">Boarding Delays</span>
                 </div>
-                <h3 className="text-base font-bold text-slate-900">Dual-Tier Stop Dwell Physics</h3>
-                <div className="bg-slate-900 text-blue-300 font-mono text-sm p-4 rounded-xl text-center border border-slate-800 shadow-inner">
+                <h3 className="text-sm sm:text-base font-bold text-slate-900">Dual-Tier Stop Dwell Physics</h3>
+                <div className="bg-slate-900 text-blue-300 font-mono text-xs sm:text-sm p-3.5 sm:p-4 rounded-xl text-center border border-slate-800 shadow-inner break-words">
                   T_dwell = T_base + T_exchange · (1 + γ_peak)
                 </div>
                 <p className="text-xs text-slate-600 leading-relaxed">
@@ -563,15 +561,15 @@ export default function ApiDocsPage({ onBackToMap }) {
               </div>
 
               {/* Formula 3 */}
-              <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+              <div className="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm space-y-3 sm:space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="px-2.5 py-1 text-xs font-bold bg-amber-100 text-amber-800 rounded-lg">
                     Formula 03
                   </span>
-                  <span className="text-xs font-semibold text-slate-400">Time-of-Day Traffic</span>
+                  <span className="text-[11px] font-semibold text-slate-400">Time-of-Day Traffic</span>
                 </div>
-                <h3 className="text-base font-bold text-slate-900">Dynamic Corridor Speed Scaling</h3>
-                <div className="bg-slate-900 text-amber-300 font-mono text-sm p-4 rounded-xl text-center border border-slate-800 shadow-inner">
+                <h3 className="text-sm sm:text-base font-bold text-slate-900">Dynamic Corridor Speed Scaling</h3>
+                <div className="bg-slate-900 text-amber-300 font-mono text-xs sm:text-sm p-3.5 sm:p-4 rounded-xl text-center border border-slate-800 shadow-inner break-words">
                   V(s, t) = V_freeflow(s) · (1 - C_bottleneck(s, t))
                 </div>
                 <p className="text-xs text-slate-600 leading-relaxed">
@@ -581,15 +579,15 @@ export default function ApiDocsPage({ onBackToMap }) {
               </div>
 
               {/* Formula 4 */}
-              <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+              <div className="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm space-y-3 sm:space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="px-2.5 py-1 text-xs font-bold bg-purple-100 text-purple-800 rounded-lg">
                     Formula 04
                   </span>
-                  <span className="text-xs font-semibold text-slate-400">Validation Metric</span>
+                  <span className="text-[11px] font-semibold text-slate-400">Validation Metric</span>
                 </div>
-                <h3 className="text-base font-bold text-slate-900">Static Schedule Reality Lag</h3>
-                <div className="bg-slate-900 text-purple-300 font-mono text-sm p-4 rounded-xl text-center border border-slate-800 shadow-inner">
+                <h3 className="text-sm sm:text-base font-bold text-slate-900">Static Schedule Reality Lag</h3>
+                <div className="bg-slate-900 text-purple-300 font-mono text-xs sm:text-sm p-3.5 sm:p-4 rounded-xl text-center border border-slate-800 shadow-inner break-words">
                   Schedule Lag % = ((T_transitpulse - T_static) / T_static) · 100
                 </div>
                 <p className="text-xs text-slate-600 leading-relaxed">
@@ -603,18 +601,18 @@ export default function ApiDocsPage({ onBackToMap }) {
 
         {/* ================= TAB 3: HACKATHON PROBLEM 01 CHECKLIST ================= */}
         {activeTab === 'checklist' && (
-          <div className="space-y-8">
-            <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm">
-              <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5 text-emerald-600" />
-                Problem 01: Requirement Compliance Matrix
+          <div className="space-y-6 sm:space-y-8">
+            <div className="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm">
+              <h2 className="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
+                <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0" />
+                <span>Problem 01: Requirement Compliance Matrix</span>
               </h2>
-              <p className="text-sm text-slate-600 mt-1">
+              <p className="text-xs sm:text-sm text-slate-600 mt-1">
                 Official Transport Stack Hackathon 2026 Problem Statement 01 requirements mapped to our implementation.
               </p>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {[
                 {
                   req: 'Real-Time Bus Traffic Model',
@@ -661,21 +659,21 @@ export default function ApiDocsPage({ onBackToMap }) {
               ].map((item, idx) => (
                 <div
                   key={idx}
-                  className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4"
+                  className="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3"
                 >
                   <div className="space-y-1 max-w-3xl">
                     <div className="flex items-center gap-2">
-                      <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold">
+                      <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold flex-shrink-0">
                         ✓
                       </span>
-                      <h3 className="font-bold text-slate-900 text-sm md:text-base">{item.req}</h3>
+                      <h3 className="font-bold text-slate-900 text-xs sm:text-base">{item.req}</h3>
                     </div>
-                    <p className="text-xs text-slate-500 pl-7">{item.desc}</p>
-                    <p className="text-xs text-emerald-800 font-medium pl-7 bg-emerald-50/70 p-2 rounded-lg mt-1 border border-emerald-100">
+                    <p className="text-[11px] sm:text-xs text-slate-500 pl-7">{item.desc}</p>
+                    <p className="text-[11px] sm:text-xs text-emerald-800 font-medium pl-7 bg-emerald-50/70 p-2 rounded-lg mt-1 border border-emerald-100">
                       <b>Our Implementation:</b> {item.solution}
                     </p>
                   </div>
-                  <span className="self-start md:self-center px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                  <span className="self-start sm:self-center px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-200 whitespace-nowrap">
                     {item.status}
                   </span>
                 </div>
@@ -686,43 +684,43 @@ export default function ApiDocsPage({ onBackToMap }) {
 
         {/* ================= TAB 4: DATASETS & ROUTING ENGINE ================= */}
         {activeTab === 'datasets' && (
-          <div className="space-y-8">
-            <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm">
-              <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-                <Database className="w-5 h-5 text-emerald-600" />
-                Datasets & Road Snapping Architecture
+          <div className="space-y-6 sm:space-y-8">
+            <div className="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm">
+              <h2 className="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
+                <Database className="w-5 h-5 text-emerald-600 flex-shrink-0" />
+                <span>Datasets & Road Snapping Architecture</span>
               </h2>
-              <p className="text-sm text-slate-600 mt-1">
+              <p className="text-xs sm:text-sm text-slate-600 mt-1">
                 Data sources, coordinate repositories, and geometry pipelines powering TransitPulse Delhi.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm space-y-3">
-                <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+              <div className="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-5 shadow-sm space-y-2 sm:space-y-3">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs sm:text-sm">
                   DTC
                 </div>
-                <h3 className="font-bold text-slate-900 text-sm">High-Density Trunk Routes</h3>
+                <h3 className="font-bold text-slate-900 text-xs sm:text-sm">High-Density Trunk Routes</h3>
                 <p className="text-xs text-slate-600 leading-relaxed">
-                  Curated key DTC routes including <b>Route 502</b> (Mehrauli – Old Delhi / KG ISBT), <b>Route 764</b> (Najafgarh – Nehru Place), <b>Route 419</b>, <b>Route 85</b>, and <b>Outer Ring Road Mudrika (OMS)</b>.
+                  Curated key DTC routes including <b>Route 502</b>, <b>Route 764</b>, <b>Route 419</b>, <b>Route 85</b>, and <b>Outer Ring Road Mudrika (OMS)</b>.
                 </p>
               </div>
 
-              <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm space-y-3">
-                <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-bold">
+              <div className="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-5 shadow-sm space-y-2 sm:space-y-3">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs sm:text-sm">
                   GPS
                 </div>
-                <h3 className="font-bold text-slate-900 text-sm">WGS84 Gateway Coordinates</h3>
+                <h3 className="font-bold text-slate-900 text-xs sm:text-sm">WGS84 Gateway Coordinates</h3>
                 <p className="text-xs text-slate-600 leading-relaxed">
                   Real geographical coordinates for major multimodal terminals: Kashmere Gate ISBT, Anand Vihar ISBT, AIIMS Hospital, Connaught Place, Dhaula Kuan, and Nehru Place.
                 </p>
               </div>
 
-              <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm space-y-3">
-                <div className="w-10 h-10 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-bold">
+              <div className="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-5 shadow-sm space-y-2 sm:space-y-3 sm:col-span-2 md:col-span-1">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-xs sm:text-sm">
                   OSRM
                 </div>
-                <h3 className="font-bold text-slate-900 text-sm">5,500+ Snapped Coordinates</h3>
+                <h3 className="font-bold text-slate-900 text-xs sm:text-sm">5,500+ Snapped Coordinates</h3>
                 <p className="text-xs text-slate-600 leading-relaxed">
                   Pre-computed road geometries generated via OSRM that follow actual Delhi overpasses, Ring Road bends, and arterial roundabouts.
                 </p>
@@ -734,4 +732,3 @@ export default function ApiDocsPage({ onBackToMap }) {
     </div>
   );
 }
-
