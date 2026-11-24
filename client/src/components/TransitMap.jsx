@@ -59,6 +59,15 @@ export default function TransitMap({
 
     if (selectedOption && selectedOption.legs) {
       selectedOption.legs.forEach(leg => {
+        // Calculate Dominant Traffic Congestion Color matching the legend
+        let congestionColor = '#10b981';
+        if (leg.segments && leg.segments.length > 0) {
+          const avgSpeed = leg.segments.reduce((acc, s) => acc + s.effectiveSpeedKmh, 0) / leg.segments.length;
+          if (avgSpeed < 14) congestionColor = '#ef4444'; // Red <15 km/h
+          else if (avgSpeed < 23) congestionColor = '#f59e0b'; // Amber 15-25 km/h
+          else congestionColor = '#10b981'; // Green >25 km/h
+        }
+
         // If high-resolution road-snapped coordinates are available from OSRM, render them!
         if (leg.roadCoordinates && leg.roadCoordinates.length > 1) {
           leg.roadCoordinates.forEach(pt => boundsLatLngs.push(pt));
@@ -73,9 +82,9 @@ export default function TransitMap({
           }).addTo(map);
           layersRef.current.routeHaloPolylines.push(halo);
 
-          // 2. Thick Core Route Line hugging the asphalt road curves (Weight 9)
+          // 2. Thick Core Route Line matching actual traffic speed color (Weight 9)
           const polyline = L.polyline(leg.roadCoordinates, {
-            color: leg.routeColor || '#10b981',
+            color: congestionColor,
             weight: 9,
             opacity: 0.95,
             lineCap: 'round',
@@ -86,6 +95,11 @@ export default function TransitMap({
             <div style="font-family: inherit; font-size: 13px; line-height: 1.5; padding: 4px;">
               <div style="font-weight: 800; color: #0f172a; margin-bottom: 4px;">🚌 Actual Delhi Road Route</div>
               <div style="color: #334155; font-weight: 600;">${leg.routeName}</div>
+              <div style="margin-top: 6px; display: flex; gap: 8px; font-size: 11px;">
+                <span style="background: ${congestionColor}20; color: ${congestionColor}; padding: 2px 8px; border-radius: 6px; font-weight: bold;">
+                  Traffic Congestion: ${congestionColor === '#ef4444' ? 'Severe (<15 km/h)' : congestionColor === '#f59e0b' ? 'Moderate (15-25 km/h)' : 'Free Flow (>25 km/h)'}
+                </span>
+              </div>
               <div style="margin-top: 6px; font-size: 11px; color: #64748b;">
                 Following real Delhi arterial street network & flyovers.
               </div>
@@ -126,70 +140,96 @@ export default function TransitMap({
           leg.stopsSequence.forEach((stp, idx) => {
             const isOrigin = stp.id === originId;
             const isDestination = stp.id === destinationId;
+            const cleanStopName = stp.name.replace(/\(.*?\)/g, '').trim();
 
             if (isOrigin) {
-              // Prominent "My Location" Beacon Pin
+              // Prominent "My Location" Beacon Pin with Pointer
               const originIcon = L.divIcon({
                 className: 'origin-marker',
                 html: `
-                  <div style="position: relative; display: flex; align-items: center; justify-content: center;">
+                  <div style="position: relative; display: flex; flex-direction: column; align-items: center;">
                     <div style="
                       position: absolute;
-                      width: 36px;
-                      height: 36px;
+                      width: 44px;
+                      height: 44px;
                       border-radius: 50%;
-                      background: rgba(59, 130, 246, 0.3);
+                      background: rgba(37, 99, 235, 0.25);
                       animation: ripple 2s infinite ease-out;
+                      top: -6px;
                     "></div>
                     <div style="
                       background: #2563eb;
                       color: white;
                       font-weight: 800;
                       font-size: 11px;
-                      padding: 4px 10px;
+                      padding: 5px 12px;
                       border-radius: 20px;
-                      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.5);
+                      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.45);
                       border: 2px solid white;
                       display: flex;
                       align-items: center;
-                      gap: 4px;
+                      gap: 6px;
                       white-space: nowrap;
+                      position: relative;
+                      z-index: 2;
                     ">
-                      <span>📍 My Location</span>
+                      <span>📍 My Location: ${cleanStopName}</span>
                     </div>
+                    <div style="
+                      width: 0;
+                      height: 0;
+                      border-left: 6px solid transparent;
+                      border-right: 6px solid transparent;
+                      border-top: 6px solid #2563eb;
+                      position: relative;
+                      z-index: 2;
+                    "></div>
                   </div>
                 `,
-                iconSize: [110, 32],
-                iconAnchor: [55, 16]
+                iconSize: [160, 36],
+                iconAnchor: [80, 36]
               });
 
               const marker = L.marker([stp.lat, stp.lng], { icon: originIcon }).addTo(map);
               marker.bindPopup(`<b>📍 My Boarding Location:</b><br/>${stp.name}`);
               layersRef.current.stopMarkers.push(marker);
             } else if (isDestination) {
-              // Prominent "Destination" Pin
+              // Prominent "Destination" Pin with Pointer
               const destIcon = L.divIcon({
                 className: 'dest-marker',
                 html: `
-                  <div style="
-                    background: #f97316;
-                    color: white;
-                    font-weight: 800;
-                    font-size: 11px;
-                    padding: 4px 10px;
-                    border-radius: 20px;
-                    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.5);
-                    border: 2px solid white;
-                    display: flex;
-                    align-items: center;
-                    gap: 4px;
-                    white-space: nowrap;
-                  ">
-                    <span>🏁 Destination: ${stp.name.split(' ')[0]}</span>
+                  <div style="position: relative; display: flex; flex-direction: column; align-items: center;">
+                    <div style="
+                      background: #f97316;
+                      color: white;
+                      font-weight: 800;
+                      font-size: 11px;
+                      padding: 5px 12px;
+                      border-radius: 20px;
+                      box-shadow: 0 4px 14px rgba(249, 115, 22, 0.45);
+                      border: 2px solid white;
+                      display: flex;
+                      align-items: center;
+                      gap: 6px;
+                      white-space: nowrap;
+                      position: relative;
+                      z-index: 2;
+                    ">
+                      <span>🏁 Destination: ${cleanStopName}</span>
+                    </div>
+                    <div style="
+                      width: 0;
+                      height: 0;
+                      border-left: 6px solid transparent;
+                      border-right: 6px solid transparent;
+                      border-top: 6px solid #f97316;
+                      position: relative;
+                      z-index: 2;
+                    "></div>
                   </div>
                 `,
-                iconSize: [140, 32],
-                iconAnchor: [70, 16]
+                iconSize: [180, 36],
+                iconAnchor: [90, 36]
               });
 
               const marker = L.marker([stp.lat, stp.lng], { icon: destIcon }).addTo(map);
@@ -200,7 +240,7 @@ export default function TransitMap({
               const marker = L.circleMarker([stp.lat, stp.lng], {
                 radius: stp.isMajorHub ? 7 : 5,
                 fillColor: '#ffffff',
-                color: '#0f172a',
+                color: congestionColor,
                 weight: 2.5,
                 opacity: 1,
                 fillOpacity: 1
