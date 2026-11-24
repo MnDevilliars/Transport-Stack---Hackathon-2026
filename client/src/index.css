@@ -24,7 +24,11 @@
   font-family: inherit;
 }
 
-/* Custom dark tile filter for clean modern look */
+/* Custom dark tile filter for clean modern look with zero watermark */
+.map-tiles-dark {
+  filter: brightness(0.62) invert(1) contrast(2.5) hue-rotate(205deg) saturate(0.35);
+}
+
 .dark-tiles .leaflet-tile {
   filter: brightness(0.65) invert(1) contrast(2.8) hue-rotate(200deg) saturate(0.35);
 }
@@ -51,3 +55,4 @@
 .live-pulse {
   animation: markerPulse 2s infinite ease-in-out;
 }
+

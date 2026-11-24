@@ -27,11 +27,11 @@ export default function TransitMap({
       zoomControl: true
     });
 
-    // High quality CartoDB Dark Matter tiles
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
-      subdomains: 'abcd',
-      maxZoom: 19
+    // Clean OpenStreetMap tiles with dark transit styling (Zero Watermark / 100% Free)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      maxZoom: 19,
+      className: 'map-tiles-dark'
     }).addTo(map);
 
     mapInstanceRef.current = map;
@@ -214,8 +214,8 @@ export default function TransitMap({
   }, [liveBuses]);
 
   return (
-    <div className="relative w-full h-[520px] lg:h-full min-h-[460px] rounded-2xl overflow-hidden border border-slate-800 shadow-2xl">
-      <div ref={mapContainerRef} className="w-full h-full z-10" />
+    <div className="relative w-full h-full min-h-[580px] lg:min-h-[720px] rounded-2xl overflow-hidden border border-slate-800 shadow-2xl flex flex-col">
+      <div ref={mapContainerRef} className="w-full h-full flex-1 z-10" />
 
       {/* Map Legend Overlay */}
       <div className="absolute bottom-4 left-4 z-20 bg-slate-900/90 backdrop-blur-md border border-slate-800 px-3.5 py-2.5 rounded-xl text-xs space-y-1.5 shadow-xl pointer-events-none">
@@ -245,3 +245,4 @@ export default function TransitMap({
     </div>
   );
 }
+

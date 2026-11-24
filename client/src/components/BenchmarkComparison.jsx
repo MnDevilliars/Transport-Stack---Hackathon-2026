@@ -138,3 +138,4 @@ export default function BenchmarkComparison({ benchmarks, summary }) {
     </div>
   );
 }
+

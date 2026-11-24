@@ -110,9 +110,9 @@ export default function App() {
       <CorridorTicker corridors={corridors} />
 
       {/* Main Workspace Layout */}
-      <main className="flex-1 max-w-7xl w-full mx-auto p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Column: Planner Controls & Analytics (5 Cols) */}
-        <div className="lg:col-span-5 flex flex-col gap-5">
+      <main className="flex-1 max-w-[1920px] w-full mx-auto px-4 lg:px-8 py-5 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        {/* Left Column: Planner Controls & Analytics (4-5 Cols) */}
+        <div className="lg:col-span-5 xl:col-span-4 flex flex-col gap-5 lg:max-h-[calc(100vh-140px)] lg:overflow-y-auto lg:pr-2">
           <JourneyPlannerCard
             stops={stops}
             originId={originId}
@@ -148,8 +148,8 @@ export default function App() {
           )}
         </div>
 
-        {/* Right Column: Live Interactive Delhi Transit Map (7 Cols) */}
-        <div className="lg:col-span-7 flex flex-col min-h-[500px]">
+        {/* Right Column: Live Interactive Delhi Transit Map (7-8 Cols) */}
+        <div className="lg:col-span-7 xl:col-span-8 flex flex-col h-[600px] lg:h-[calc(100vh-140px)] sticky top-20">
           <TransitMap
             stops={stops}
             selectedOption={selectedOption}
@@ -169,3 +169,4 @@ export default function App() {
     </div>
   );
 }
+
