@@ -129,8 +129,6 @@ export default function App() {
             setDestinationId={setDestinationId}
             departureTime={departureTime}
             setDepartureTime={setDepartureTime}
-            activeMode={activeMode}
-            setActiveMode={setActiveMode}
             onCalculate={() => handleCalculatePlan()}
             isLoading={isLoading}
           />
