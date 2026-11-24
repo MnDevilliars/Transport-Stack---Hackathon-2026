@@ -1,5 +1,5 @@
 import React from 'react';
-import { Clock, Car, Bus, TrendingUp, AlertTriangle } from 'lucide-react';
+import { Clock, Car, Bus, TrendingUp } from 'lucide-react';
 
 export default function BenchmarkComparison({ benchmarks, summary }) {
   if (!benchmarks) return null;
@@ -12,8 +12,8 @@ export default function BenchmarkComparison({ benchmarks, summary }) {
   } = benchmarks;
 
   return (
-    <div className="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-sm hover:shadow-md transition-all">
-      <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-slate-100">
+    <div className="bg-white border border-slate-200/90 rounded-3xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-all">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3.5 mb-4 border-b border-slate-100 gap-2">
         <div>
           <h3 className="font-extrabold text-sm text-slate-800 tracking-tight flex items-center gap-2">
             <TrendingUp className="w-4 h-4 text-emerald-600" />
@@ -23,16 +23,16 @@ export default function BenchmarkComparison({ benchmarks, summary }) {
             DTC Timetable vs Google Maps (Car) vs TransitPulse (Real Bus Model)
           </p>
         </div>
-        <span className="px-3 py-1 rounded-full text-xs font-black bg-orange-100 text-orange-700 border border-orange-200 shadow-sm">
+        <span className="self-start sm:self-center px-2.5 py-1 rounded-full text-xs font-black bg-orange-100 text-orange-700 border border-orange-200 shadow-sm whitespace-nowrap">
           +{scheduleUnderestimatePercentage}% Schedule Delay
         </span>
       </div>
 
       {/* 3-Way Benchmark Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3 mb-4">
         {/* 1. Static Schedule */}
-        <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col justify-between">
-          <div className="flex items-center justify-between text-slate-500 mb-2">
+        <div className="p-3 sm:p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col justify-between">
+          <div className="flex items-center justify-between text-slate-500 mb-1.5">
             <span className="text-xs font-bold flex items-center gap-1.5">
               <Clock className="w-3.5 h-3.5 text-slate-400" />
               DTC Timetable
@@ -42,7 +42,7 @@ export default function BenchmarkComparison({ benchmarks, summary }) {
             </span>
           </div>
           <div className="flex items-baseline gap-1">
-            <span className="text-2xl font-black text-slate-700 font-mono">
+            <span className="text-xl sm:text-2xl font-black text-slate-700 font-mono">
               {staticDtcScheduleEtaMin}
             </span>
             <span className="text-xs font-semibold text-slate-400">mins</span>
@@ -53,8 +53,8 @@ export default function BenchmarkComparison({ benchmarks, summary }) {
         </div>
 
         {/* 2. Google Maps Car */}
-        <div className="p-3.5 rounded-2xl bg-sky-50/60 border border-sky-100 flex flex-col justify-between">
-          <div className="flex items-center justify-between text-sky-800 mb-2">
+        <div className="p-3 sm:p-3.5 rounded-2xl bg-sky-50/60 border border-sky-100 flex flex-col justify-between">
+          <div className="flex items-center justify-between text-sky-800 mb-1.5">
             <span className="text-xs font-bold flex items-center gap-1.5">
               <Car className="w-3.5 h-3.5 text-sky-500" />
               Google Maps
@@ -64,7 +64,7 @@ export default function BenchmarkComparison({ benchmarks, summary }) {
             </span>
           </div>
           <div className="flex items-baseline gap-1">
-            <span className="text-2xl font-black text-sky-900 font-mono">
+            <span className="text-xl sm:text-2xl font-black text-sky-900 font-mono">
               {googleMapsCarEtaMin}
             </span>
             <span className="text-xs font-semibold text-sky-600">mins</span>
@@ -75,8 +75,8 @@ export default function BenchmarkComparison({ benchmarks, summary }) {
         </div>
 
         {/* 3. TransitPulse Model */}
-        <div className="p-3.5 rounded-2xl bg-emerald-50 border-2 border-emerald-500/80 flex flex-col justify-between shadow-sm">
-          <div className="flex items-center justify-between text-emerald-900 mb-2">
+        <div className="p-3 sm:p-3.5 rounded-2xl bg-emerald-50 border-2 border-emerald-500/80 flex flex-col justify-between shadow-sm">
+          <div className="flex items-center justify-between text-emerald-900 mb-1.5">
             <span className="text-xs font-black flex items-center gap-1.5">
               <Bus className="w-3.5 h-3.5 text-emerald-600" />
               TransitPulse
@@ -86,7 +86,7 @@ export default function BenchmarkComparison({ benchmarks, summary }) {
             </span>
           </div>
           <div className="flex items-baseline gap-1">
-            <span className="text-2xl font-black text-emerald-900 font-mono">
+            <span className="text-xl sm:text-2xl font-black text-emerald-900 font-mono">
               {transitPulseModelEtaMin}
             </span>
             <span className="text-xs font-bold text-emerald-700">mins</span>
@@ -102,8 +102,8 @@ export default function BenchmarkComparison({ benchmarks, summary }) {
 
       {/* Physics Breakdown: Running vs Dwell Time */}
       {summary && (
-        <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 text-xs">
-          <div className="flex items-center justify-between text-slate-600 mb-1.5 text-[11px] font-semibold">
+        <div className="p-3 sm:p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 text-xs">
+          <div className="flex items-center justify-between text-slate-600 mb-1.5 text-[10px] sm:text-[11px] font-semibold flex-wrap gap-1">
             <span>Travel Time Breakdown:</span>
             <span className="font-mono text-slate-800 font-bold">
               {summary.runningTimeMin}m Moving + {summary.dwellTimeMin}m at Stops
@@ -125,7 +125,7 @@ export default function BenchmarkComparison({ benchmarks, summary }) {
               title="Stop Boarding & Dwell Delay"
             />
           </div>
-          <div className="flex items-center justify-between text-[10px] text-slate-500 mt-1.5 font-medium">
+          <div className="flex items-center justify-between text-[10px] text-slate-500 mt-1.5 font-medium flex-wrap gap-2">
             <span className="flex items-center gap-1.5">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" /> Road driving time
             </span>

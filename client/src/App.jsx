@@ -6,10 +6,11 @@ import BenchmarkComparison from './components/BenchmarkComparison';
 import RouteOptionsList from './components/RouteOptionsList';
 import TransitMap from './components/TransitMap';
 import ApiDocsPage from './components/ApiDocsPage';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, Bus, Map } from 'lucide-react';
 
 export default function App() {
   const [currentView, setCurrentView] = useState('map'); // 'map' | 'docs'
+  const [mobileTab, setMobileTab] = useState('planner'); // 'planner' | 'map'
   const [stops, setStops] = useState([]);
   const [corridors, setCorridors] = useState([]);
   const [liveBuses, setLiveBuses] = useState([]);
@@ -128,9 +129,41 @@ export default function App() {
           <CorridorTicker corridors={corridors} />
 
           {/* Main Workspace Layout */}
-          <main className="flex-1 max-w-[1920px] w-full mx-auto px-4 lg:px-8 py-5 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <main className="flex-1 max-w-[1920px] w-full mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-5 grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 items-start">
+            {/* Mobile Tab Segmented Switcher (Visible only on mobile/tablet < lg) */}
+            <div className="lg:hidden col-span-1 w-full flex items-center p-1 bg-slate-200/90 rounded-2xl mb-1 font-bold text-xs shadow-inner sticky top-[58px] z-30 backdrop-blur-md">
+              <button
+                type="button"
+                onClick={() => setMobileTab('planner')}
+                className={`flex-1 py-2 sm:py-2.5 rounded-xl flex items-center justify-center gap-1.5 transition ${
+                  mobileTab === 'planner'
+                    ? 'bg-white text-emerald-800 shadow-md font-extrabold'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <Bus className="w-3.5 h-3.5 text-emerald-600" />
+                <span>Planner & Routes</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setMobileTab('map')}
+                className={`flex-1 py-2 sm:py-2.5 rounded-xl flex items-center justify-center gap-1.5 transition ${
+                  mobileTab === 'map'
+                    ? 'bg-emerald-600 text-white shadow-md font-extrabold'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <Map className="w-3.5 h-3.5" />
+                <span>Live Map ({liveBuses.length} Buses)</span>
+              </button>
+            </div>
+
             {/* Left Column: Planner Controls & Analytics (4-5 Cols) */}
-            <div className="lg:col-span-5 xl:col-span-4 flex flex-col gap-5 lg:max-h-[calc(100vh-140px)] lg:overflow-y-auto lg:pr-2">
+            <div
+              className={`lg:col-span-5 xl:col-span-4 flex-col gap-4 sm:gap-5 lg:max-h-[calc(100vh-140px)] lg:overflow-y-auto lg:pr-2 ${
+                mobileTab === 'planner' ? 'flex' : 'hidden lg:flex'
+              }`}
+            >
               <JourneyPlannerCard
                 stops={stops}
                 originId={originId}
@@ -163,12 +196,31 @@ export default function App() {
                   selectedOptionId={selectedOptionId}
                   onSelectOption={setSelectedOptionId}
                   liveBuses={liveBuses}
+                  onViewOnMap={() => setMobileTab('map')}
                 />
               )}
             </div>
 
             {/* Right Column: Live Interactive Delhi Transit Map (7-8 Cols) */}
-            <div className="lg:col-span-7 xl:col-span-8 flex flex-col h-[600px] lg:h-[calc(100vh-140px)] sticky top-20">
+            <div
+              className={`lg:col-span-7 xl:col-span-8 flex-col h-[520px] lg:h-[calc(100vh-140px)] sticky top-16 lg:top-20 ${
+                mobileTab === 'map' ? 'flex' : 'hidden lg:flex'
+              }`}
+            >
+              {/* Mobile Back-to-Planner floating helper bar */}
+              <div className="lg:hidden flex items-center justify-between mb-2 p-2 bg-emerald-50 border border-emerald-200 rounded-2xl text-xs font-semibold text-emerald-900">
+                <span className="truncate pr-2">
+                  📍 Tracking {selectedOption ? `Route ${selectedOption.routeNumber}` : 'Delhi Network'}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setMobileTab('planner')}
+                  className="px-2.5 py-1 rounded-xl bg-emerald-600 text-white font-bold text-[11px] shadow-sm active:scale-95 whitespace-nowrap"
+                >
+                  View Details ➔
+                </button>
+              </div>
+
               <TransitMap
                 stops={stops}
                 selectedOption={selectedOption}

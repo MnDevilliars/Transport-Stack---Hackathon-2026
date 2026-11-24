@@ -734,3 +734,4 @@ export default function ApiDocsPage({ onBackToMap }) {
     </div>
   );
 }
+

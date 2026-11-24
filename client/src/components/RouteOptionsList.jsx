@@ -11,14 +11,16 @@ import {
   Activity,
   Navigation,
   Users,
-  Gauge
+  Gauge,
+  Map
 } from 'lucide-react';
 
 export default function RouteOptionsList({
   journeyOptions,
   selectedOptionId,
   onSelectOption,
-  liveBuses = []
+  liveBuses = [],
+  onViewOnMap = null
 }) {
   const [expandedId, setExpandedId] = useState(null);
 
@@ -30,7 +32,7 @@ export default function RouteOptionsList({
   };
 
   return (
-    <div className="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-sm hover:shadow-md transition-all space-y-4">
+    <div className="bg-white border border-slate-200/90 rounded-3xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-all space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between pb-3.5 border-b border-slate-100">
         <div>
@@ -42,7 +44,7 @@ export default function RouteOptionsList({
             Fastest options calibrated to Delhi ground traffic
           </p>
         </div>
-        <span className="text-[11px] text-emerald-700 bg-emerald-50 border border-emerald-200 font-bold px-2 py-0.5 rounded-full">
+        <span className="text-[10px] sm:text-[11px] text-emerald-700 bg-emerald-50 border border-emerald-200 font-bold px-2 py-0.5 rounded-full whitespace-nowrap">
           Fastest First
         </span>
       </div>
@@ -63,23 +65,23 @@ export default function RouteOptionsList({
             <div
               key={opt.id}
               onClick={() => onSelectOption(opt.id)}
-              className={`rounded-2xl border transition-all cursor-pointer p-4 ${
+              className={`rounded-2xl border transition-all cursor-pointer p-3.5 sm:p-4 ${
                 isSelected
                   ? 'bg-emerald-50/40 border-2 border-emerald-500 shadow-md shadow-emerald-500/10'
                   : 'bg-slate-50 border-slate-200/80 hover:border-slate-300'
               }`}
             >
               {/* Card Top: Route Badge, Name, ETA */}
-              <div className="flex items-start justify-between gap-3">
-                <div className="space-y-1.5 flex-1 min-w-0">
+              <div className="flex items-start justify-between gap-2.5">
+                <div className="space-y-1 flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <span
-                      className="px-3 py-1 rounded-xl text-xs font-black text-white shadow-sm font-mono"
+                      className="px-2.5 sm:px-3 py-1 rounded-xl text-xs font-black text-white shadow-sm font-mono whitespace-nowrap"
                       style={{ backgroundColor: opt.routeColor || '#10b981' }}
                     >
                       {opt.routeNumber}
                     </span>
-                    <span className="text-xs font-bold text-slate-700">
+                    <span className="text-xs font-bold text-slate-700 truncate">
                       {opt.type === 'direct' ? 'Direct Bus (No Transfer)' : '1 Transfer'}
                     </span>
                   </div>
@@ -90,43 +92,46 @@ export default function RouteOptionsList({
 
                 <div className="text-right flex-shrink-0">
                   <div className="flex items-baseline gap-1 justify-end">
-                    <span className="text-2xl font-black text-slate-900 font-mono">
+                    <span className="text-xl sm:text-2xl font-black text-slate-900 font-mono">
                       {opt.summary.modelEtaMinutes}
                     </span>
                     <span className="text-xs font-bold text-slate-600">mins</span>
                   </div>
-                  <span className="text-[10px] text-slate-400 font-mono font-medium block">
+                  <span className="text-[10px] text-slate-400 font-mono font-medium block whitespace-nowrap">
                     {opt.summary.totalDistanceKm} km • {opt.summary.totalStops} stops
                   </span>
                 </div>
               </div>
 
-              {/* 🟢 Live Bus Location Status Card (Simple English Tracking) */}
+              {/* 🟢 Live Bus Location Status Card (Mobile-Optimized) */}
               {primaryBus ? (
-                <div className="mt-3 p-3 rounded-xl bg-white border border-emerald-200/90 shadow-2xs space-y-1.5">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-emerald-800 flex items-center gap-1.5">
+                <div className="mt-3 p-3 rounded-xl bg-white border border-emerald-200/90 shadow-2xs space-y-2">
+                  <div className="flex items-center justify-between gap-2 flex-wrap">
+                    <span className="text-xs font-bold text-emerald-800 flex items-center gap-1.5 whitespace-nowrap">
                       <span className="relative flex h-2.5 w-2.5">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                         <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
                       </span>
-                      Live Bus: <span className="font-mono font-black">{primaryBus.vehicleId}</span>
+                      Live Bus: <span className="font-mono font-black text-xs">{primaryBus.vehicleId}</span>
                     </span>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200 whitespace-nowrap">
                       {primaryBus.speedKmh} km/h • {primaryBus.speedKmh < 15 ? 'Slow in Traffic' : 'Normal Speed'}
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between text-[11px] text-slate-600 pt-0.5">
-                    <span className="flex items-center gap-1 text-slate-700">
-                      <MapPin className="w-3 h-3 text-red-500 flex-shrink-0" />
-                      <span>
-                        At: <b>{primaryBus.previousStop}</b> ➔ Next: <b>{primaryBus.nextStop}</b>
+                  <div className="space-y-1 text-[11px] text-slate-600 pt-0.5 border-t border-slate-100">
+                    <div className="flex items-start gap-1.5 text-slate-700">
+                      <MapPin className="w-3.5 h-3.5 text-red-500 flex-shrink-0 mt-0.5" />
+                      <span className="font-medium text-[11px] leading-tight">
+                        At: <b className="text-slate-900">{primaryBus.previousStop}</b> ➔ Next: <b className="text-slate-900">{primaryBus.nextStop}</b>
                       </span>
-                    </span>
-                    <span className="text-slate-500 font-medium whitespace-nowrap pl-2">
-                      Crowd: <b className="text-slate-700">{primaryBus.occupancy}</b>
-                    </span>
+                    </div>
+                    <div className="flex items-center justify-between text-[10px] text-slate-500 pl-5 pt-0.5">
+                      <span>Crowd: <b className="text-slate-700 font-semibold">{primaryBus.occupancy}</b></span>
+                      <span className="text-emerald-700 font-semibold font-mono text-[9px] bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-100">
+                        GPS Active
+                      </span>
+                    </div>
                   </div>
                 </div>
               ) : (
@@ -136,20 +141,32 @@ export default function RouteOptionsList({
                 </div>
               )}
 
-              {/* Action row with Ticket Pill & Expand */}
-              <div className="mt-3 pt-3 border-t border-slate-200/60 flex items-center justify-between text-xs">
-                <div className="flex items-center gap-2">
-                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 flex items-center gap-1">
+              {/* Action row with Ticket Pill, Map link & Expand */}
+              <div className="mt-3 pt-3 border-t border-slate-200/60 flex items-center justify-between text-xs gap-2 flex-wrap">
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 flex items-center gap-1 whitespace-nowrap">
                     <Ticket className="w-3 h-3" /> Fare: ₹15 - ₹25
                   </span>
-                  <span className="text-[11px] text-emerald-600 font-bold hidden sm:inline">
-                    {isSelected ? '✓ Showing on Map' : 'Select Route'}
-                  </span>
+                  {onViewOnMap && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onSelectOption(opt.id);
+                        onViewOnMap();
+                      }}
+                      className="lg:hidden text-[11px] text-emerald-700 hover:text-emerald-800 font-bold flex items-center gap-1 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200"
+                    >
+                      <Map className="w-3 h-3" />
+                      <span>View Map</span>
+                    </button>
+                  )}
                 </div>
+
                 <button
                   type="button"
                   onClick={(e) => toggleExpand(opt.id, e)}
-                  className="flex items-center gap-1 text-[11px] font-bold text-slate-600 hover:text-emerald-700 transition"
+                  className="flex items-center gap-1 text-[11px] font-bold text-slate-600 hover:text-emerald-700 transition ml-auto"
                 >
                   <span>{isExpanded ? 'Hide Details' : 'View Stops & Traffic'}</span>
                   {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
@@ -159,7 +176,7 @@ export default function RouteOptionsList({
               {/* Expanded Segment Detail */}
               {isExpanded && (
                 <div className="mt-3.5 pt-3 border-t border-slate-200 space-y-2 text-xs">
-                  <div className="flex items-center justify-between text-[11px] text-slate-500 font-bold pb-1">
+                  <div className="flex items-center justify-between text-[11px] text-slate-500 font-bold pb-1 flex-wrap gap-1">
                     <span>🛣️ Stop-by-Stop Traffic & Delay:</span>
                     <span className="text-[10px] text-slate-400 font-normal">
                       (Includes driving speed + stop boarding delay)
@@ -194,31 +211,33 @@ export default function RouteOptionsList({
                             return (
                               <div
                                 key={`seg_${sIdx}`}
-                                className={`p-2.5 rounded-xl border flex items-center justify-between gap-2 shadow-2xs transition ${
+                                className={`p-2.5 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-2 shadow-2xs transition ${
                                   isBusHere
                                     ? 'bg-emerald-50 border-emerald-400 ring-1 ring-emerald-300'
                                     : 'bg-white border-slate-200/90'
                                 }`}
                               >
-                                <div className="flex items-center gap-2 min-w-0">
+                                <div className="flex items-start sm:items-center gap-2 min-w-0">
                                   <span
-                                    className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+                                    className="w-2.5 h-2.5 rounded-full flex-shrink-0 mt-1 sm:mt-0"
                                     style={{ backgroundColor: seg.congestionColor }}
                                     title={seg.effectiveSpeedKmh < 15 ? 'Heavy Traffic (Jam)' : 'Normal Flow'}
                                   />
-                                  <div className="truncate">
-                                    <span className="font-semibold text-slate-700 text-[11px]">
-                                      {seg.from.name} ➔ {seg.to.name}
-                                    </span>
-                                    {isBusHere && (
-                                      <span className="ml-2 px-1.5 py-0.2 text-[9px] font-black uppercase tracking-wider bg-emerald-600 text-white rounded-full">
-                                        🚌 Bus Is Currently Here
+                                  <div className="min-w-0">
+                                    <div className="flex items-center gap-1.5 flex-wrap">
+                                      <span className="font-semibold text-slate-800 text-xs">
+                                        {seg.from.name} ➔ {seg.to.name}
                                       </span>
-                                    )}
+                                      {isBusHere && (
+                                        <span className="px-1.5 py-0.2 text-[9px] font-black uppercase tracking-wider bg-emerald-600 text-white rounded-full whitespace-nowrap">
+                                          🚌 Bus is Here
+                                        </span>
+                                      )}
+                                    </div>
                                   </div>
                                 </div>
 
-                                <div className="flex items-center gap-2 text-[10px] whitespace-nowrap">
+                                <div className="flex items-center gap-2 text-[10px] whitespace-nowrap self-end sm:self-auto pl-4 sm:pl-0">
                                   <span className="font-mono text-slate-400 font-medium">
                                     {seg.distanceKm} km
                                   </span>

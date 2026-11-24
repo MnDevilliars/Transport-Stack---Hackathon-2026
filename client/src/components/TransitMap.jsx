@@ -351,32 +351,32 @@ export default function TransitMap({
   }, [liveBuses]);
 
   return (
-    <div className="relative w-full h-full min-h-[580px] lg:min-h-[720px] rounded-3xl overflow-hidden border border-slate-200/90 shadow-sm flex flex-col bg-slate-50">
+    <div className="relative w-full h-full min-h-[480px] lg:min-h-[720px] rounded-3xl overflow-hidden border border-slate-200/90 shadow-sm flex flex-col bg-slate-50">
       <div ref={mapContainerRef} className="w-full h-full flex-1 z-10" />
 
       {/* Map Legend Overlay (Clean White Card matching Image 2) */}
-      <div className="absolute bottom-5 left-5 z-20 bg-white/95 backdrop-blur-md border border-slate-200 px-4 py-3 rounded-2xl text-xs space-y-2 shadow-lg pointer-events-none">
-        <span className="font-extrabold text-[10px] uppercase tracking-wider text-slate-500 block">
+      <div className="absolute bottom-3 left-3 sm:bottom-5 sm:left-5 z-20 bg-white/95 backdrop-blur-md border border-slate-200 px-3 py-2 sm:px-4 sm:py-3 rounded-2xl text-xs space-y-1.5 sm:space-y-2 shadow-lg pointer-events-none max-w-[calc(100%-24px)]">
+        <span className="font-extrabold text-[9px] sm:text-[10px] uppercase tracking-wider text-slate-500 block">
           Track Congestion Speed
         </span>
-        <div className="flex items-center gap-4 text-[11px] font-semibold text-slate-700">
-          <span className="flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded-full bg-emerald-500 shadow-sm" /> &gt;25 km/h
+        <div className="flex items-center gap-2.5 sm:gap-4 text-[10px] sm:text-[11px] font-semibold text-slate-700 flex-wrap">
+          <span className="flex items-center gap-1">
+            <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-emerald-500 shadow-sm" /> &gt;25 km/h
           </span>
-          <span className="flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded-full bg-amber-500 shadow-sm" /> 15-25 km/h
+          <span className="flex items-center gap-1">
+            <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-amber-500 shadow-sm" /> 15-25 km/h
           </span>
-          <span className="flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded-full bg-red-500 shadow-sm" /> &lt;15 km/h (Peak Gridlock)
+          <span className="flex items-center gap-1">
+            <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-red-500 shadow-sm" /> &lt;15 km/h (Gridlock)
           </span>
         </div>
       </div>
 
       {/* Live Fleet Counter Overlay */}
-      <div className="absolute top-5 right-5 z-20 bg-white/95 backdrop-blur-md border border-slate-200 px-3.5 py-2 rounded-2xl text-xs flex items-center gap-2.5 shadow-md">
-        <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-        <span className="text-slate-700 font-extrabold text-xs">
-          {liveBuses?.length || 0} DTC Buses Live on Map
+      <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 bg-white/95 backdrop-blur-md border border-slate-200 px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-2xl text-[11px] sm:text-xs flex items-center gap-2 shadow-md">
+        <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+        <span className="text-slate-700 font-extrabold text-[10px] sm:text-xs">
+          {liveBuses?.length || 0} DTC Buses Live
         </span>
       </div>
     </div>
