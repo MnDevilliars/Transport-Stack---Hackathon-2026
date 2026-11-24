@@ -17,14 +17,14 @@ export default function BenchmarkComparison({ benchmarks, summary }) {
         <div>
           <h3 className="font-extrabold text-sm text-slate-800 tracking-tight flex items-center gap-2">
             <TrendingUp className="w-4 h-4 text-emerald-600" />
-            Asali Time vs Kagazi Time (Reality Check)
+            Travel Time Benchmark (Reality Check)
           </h3>
           <p className="text-[11px] text-slate-400 font-medium">
-            DTC Chart vs Google Maps (Car) vs TransitPulse (Asali Bus Model)
+            DTC Timetable vs Google Maps (Car) vs TransitPulse (Real Bus Model)
           </p>
         </div>
         <span className="px-3 py-1 rounded-full text-xs font-black bg-orange-100 text-orange-700 border border-orange-200 shadow-sm">
-          +{scheduleUnderestimatePercentage}% Asali Delay
+          +{scheduleUnderestimatePercentage}% Schedule Delay
         </span>
       </div>
 
@@ -35,10 +35,10 @@ export default function BenchmarkComparison({ benchmarks, summary }) {
           <div className="flex items-center justify-between text-slate-500 mb-2">
             <span className="text-xs font-bold flex items-center gap-1.5">
               <Clock className="w-3.5 h-3.5 text-slate-400" />
-              DTC Time Table
+              DTC Timetable
             </span>
             <span className="text-[10px] text-red-700 font-extrabold bg-red-100 px-2 py-0.5 rounded-full">
-              Kagazi / Galat
+              Static / Delayed
             </span>
           </div>
           <div className="flex items-baseline gap-1">
@@ -48,7 +48,7 @@ export default function BenchmarkComparison({ benchmarks, summary }) {
             <span className="text-xs font-semibold text-slate-400">mins</span>
           </div>
           <p className="text-[10px] text-slate-400 mt-1">
-            Traffic aur stops ki bheed ko bilkul ignore karta hai.
+            Ignores real-world traffic bottlenecks and passenger boarding queues.
           </p>
         </div>
 
@@ -60,7 +60,7 @@ export default function BenchmarkComparison({ benchmarks, summary }) {
               Google Maps
             </span>
             <span className="text-[10px] text-sky-700 font-extrabold bg-sky-100 px-2 py-0.5 rounded-full">
-              Sirf Car ke liye
+              Car Speed Only
             </span>
           </div>
           <div className="flex items-baseline gap-1">
@@ -70,7 +70,7 @@ export default function BenchmarkComparison({ benchmarks, summary }) {
             <span className="text-xs font-semibold text-sky-600">mins</span>
           </div>
           <p className="text-[10px] text-sky-600/80 mt-1">
-            Car seedha nikal jaati hai, par bus har stop par rukti hai.
+            Private car speed; does not account for bus stops or passenger boarding.
           </p>
         </div>
 
@@ -82,7 +82,7 @@ export default function BenchmarkComparison({ benchmarks, summary }) {
               TransitPulse
             </span>
             <span className="text-[10px] text-white font-extrabold bg-emerald-600 px-2 py-0.5 rounded-full shadow-sm">
-              100% Asali Time
+              Real Bus Time
             </span>
           </div>
           <div className="flex items-baseline gap-1">
@@ -95,7 +95,7 @@ export default function BenchmarkComparison({ benchmarks, summary }) {
             </span>
           </div>
           <p className="text-[10px] text-emerald-800 mt-1 font-medium">
-            Delhi road traffic + stops par yatriyon ka boarding delay shamil hai.
+            Includes bus lane bottlenecks + 2.5m dwell delay per interchange.
           </p>
         </div>
       </div>
@@ -104,9 +104,9 @@ export default function BenchmarkComparison({ benchmarks, summary }) {
       {summary && (
         <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 text-xs">
           <div className="flex items-center justify-between text-slate-600 mb-1.5 text-[11px] font-semibold">
-            <span>Kahan Kitna Samay Jayega:</span>
+            <span>Travel Time Breakdown:</span>
             <span className="font-mono text-slate-800 font-bold">
-              {summary.runningTimeMin}m Chalne me + {summary.dwellTimeMin}m Stops par
+              {summary.runningTimeMin}m Moving + {summary.dwellTimeMin}m at Stops
             </span>
           </div>
           <div className="w-full h-2.5 rounded-full bg-slate-200 overflow-hidden flex">
@@ -127,10 +127,10 @@ export default function BenchmarkComparison({ benchmarks, summary }) {
           </div>
           <div className="flex items-center justify-between text-[10px] text-slate-500 mt-1.5 font-medium">
             <span className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" /> Road par bus chalne ka time
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" /> Road driving time
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-orange-500" /> Stops par yatri chadhne/utarne ka time
+              <span className="w-2.5 h-2.5 rounded-full bg-orange-500" /> Passenger boarding at stops
             </span>
           </div>
         </div>

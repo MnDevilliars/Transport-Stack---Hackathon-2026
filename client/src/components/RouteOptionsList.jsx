@@ -36,14 +36,14 @@ export default function RouteOptionsList({
         <div>
           <h3 className="font-extrabold text-sm text-slate-800 tracking-tight flex items-center gap-2">
             <Bus className="w-4 h-4 text-emerald-600" />
-            Aapke Liye Best Bus Routes ({journeyOptions.length})
+            Recommended Bus Routes ({journeyOptions.length})
           </h3>
           <p className="text-[11px] text-slate-400 font-medium">
-            Delhi ke ground traffic ke hisaab se sabse fast options
+            Fastest options calibrated to Delhi ground traffic
           </p>
         </div>
         <span className="text-[11px] text-emerald-700 bg-emerald-50 border border-emerald-200 font-bold px-2 py-0.5 rounded-full">
-          Sabse Fast Pehle
+          Fastest First
         </span>
       </div>
 
@@ -80,7 +80,7 @@ export default function RouteOptionsList({
                       {opt.routeNumber}
                     </span>
                     <span className="text-xs font-bold text-slate-700">
-                      {opt.type === 'direct' ? 'Direct Bus (Bina Badle)' : '1 Transfer (Bus Badlo)'}
+                      {opt.type === 'direct' ? 'Direct Bus (No Transfer)' : '1 Transfer'}
                     </span>
                   </div>
                   <p className="text-xs font-medium text-slate-500 truncate" title={opt.routeName}>
@@ -93,7 +93,7 @@ export default function RouteOptionsList({
                     <span className="text-2xl font-black text-slate-900 font-mono">
                       {opt.summary.modelEtaMinutes}
                     </span>
-                    <span className="text-xs font-bold text-slate-600">min</span>
+                    <span className="text-xs font-bold text-slate-600">mins</span>
                   </div>
                   <span className="text-[10px] text-slate-400 font-mono font-medium block">
                     {opt.summary.totalDistanceKm} km • {opt.summary.totalStops} stops
@@ -101,7 +101,7 @@ export default function RouteOptionsList({
                 </div>
               </div>
 
-              {/* 🟢 Live Bus Location Status Card (User-Friendly Tracking) */}
+              {/* 🟢 Live Bus Location Status Card (Simple English Tracking) */}
               {primaryBus ? (
                 <div className="mt-3 p-3 rounded-xl bg-white border border-emerald-200/90 shadow-2xs space-y-1.5">
                   <div className="flex items-center justify-between">
@@ -113,7 +113,7 @@ export default function RouteOptionsList({
                       Live Bus: <span className="font-mono font-black">{primaryBus.vehicleId}</span>
                     </span>
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
-                      {primaryBus.speedKmh} km/h • {primaryBus.speedKmh < 15 ? 'Traffic me dheemi' : 'Normal Speed'}
+                      {primaryBus.speedKmh} km/h • {primaryBus.speedKmh < 15 ? 'Slow in Traffic' : 'Normal Speed'}
                     </span>
                   </div>
 
@@ -121,11 +121,11 @@ export default function RouteOptionsList({
                     <span className="flex items-center gap-1 text-slate-700">
                       <MapPin className="w-3 h-3 text-red-500 flex-shrink-0" />
                       <span>
-                        Abhi: <b>{primaryBus.previousStop}</b> ➔ Agla: <b>{primaryBus.nextStop}</b>
+                        At: <b>{primaryBus.previousStop}</b> ➔ Next: <b>{primaryBus.nextStop}</b>
                       </span>
                     </span>
                     <span className="text-slate-500 font-medium whitespace-nowrap pl-2">
-                      Bheed: <b className="text-slate-700">{primaryBus.occupancy}</b>
+                      Crowd: <b className="text-slate-700">{primaryBus.occupancy}</b>
                     </span>
                   </div>
                 </div>
@@ -140,10 +140,10 @@ export default function RouteOptionsList({
               <div className="mt-3 pt-3 border-t border-slate-200/60 flex items-center justify-between text-xs">
                 <div className="flex items-center gap-2">
                   <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 flex items-center gap-1">
-                    <Ticket className="w-3 h-3" /> Kiraya: ₹15 - ₹25
+                    <Ticket className="w-3 h-3" /> Fare: ₹15 - ₹25
                   </span>
                   <span className="text-[11px] text-emerald-600 font-bold hidden sm:inline">
-                    {isSelected ? '✓ Map par dikh raha hai' : 'Is Bus ko Chunein'}
+                    {isSelected ? '✓ Showing on Map' : 'Select Route'}
                   </span>
                 </div>
                 <button
@@ -151,7 +151,7 @@ export default function RouteOptionsList({
                   onClick={(e) => toggleExpand(opt.id, e)}
                   className="flex items-center gap-1 text-[11px] font-bold text-slate-600 hover:text-emerald-700 transition"
                 >
-                  <span>{isExpanded ? 'Details Chhupayein' : 'Stops & Traffic Dekhein'}</span>
+                  <span>{isExpanded ? 'Hide Details' : 'View Stops & Traffic'}</span>
                   {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
                 </button>
               </div>
@@ -160,9 +160,9 @@ export default function RouteOptionsList({
               {isExpanded && (
                 <div className="mt-3.5 pt-3 border-t border-slate-200 space-y-2 text-xs">
                   <div className="flex items-center justify-between text-[11px] text-slate-500 font-bold pb-1">
-                    <span>🛣️ Har Stop ke beech ka Traffic aur Samay:</span>
+                    <span>🛣️ Stop-by-Stop Traffic & Delay:</span>
                     <span className="text-[10px] text-slate-400 font-normal">
-                      (Speed + Stop Boarding Time shamil hai)
+                      (Includes driving speed + stop boarding delay)
                     </span>
                   </div>
 
@@ -175,7 +175,7 @@ export default function RouteOptionsList({
                         >
                           <CornerDownRight className="w-4 h-4 text-orange-600 flex-shrink-0" />
                           <span className="font-medium text-xs">
-                            Dusri bus yahan pakdein: <b>{leg.transferAt.name}</b> (~{leg.transferWaitTimeMin} min wait)
+                            Transfer to next bus at: <b>{leg.transferAt.name}</b> (~{leg.transferWaitTimeMin} mins wait)
                           </span>
                         </div>
                       );
@@ -204,7 +204,7 @@ export default function RouteOptionsList({
                                   <span
                                     className="w-2.5 h-2.5 rounded-full flex-shrink-0"
                                     style={{ backgroundColor: seg.congestionColor }}
-                                    title={seg.effectiveSpeedKmh < 15 ? 'Bhari Traffic (Jam)' : 'Normal'}
+                                    title={seg.effectiveSpeedKmh < 15 ? 'Heavy Traffic (Jam)' : 'Normal Flow'}
                                   />
                                   <div className="truncate">
                                     <span className="font-semibold text-slate-700 text-[11px]">
@@ -212,7 +212,7 @@ export default function RouteOptionsList({
                                     </span>
                                     {isBusHere && (
                                       <span className="ml-2 px-1.5 py-0.2 text-[9px] font-black uppercase tracking-wider bg-emerald-600 text-white rounded-full">
-                                        🚌 Bus Abhi Yahan Hai
+                                        🚌 Bus Is Currently Here
                                       </span>
                                     )}
                                   </div>
