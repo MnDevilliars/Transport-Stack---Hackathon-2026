@@ -149,3 +149,4 @@ module.exports = {
   getTemporalSpeedFactor,
   evaluateSegmentTransit
 };
+

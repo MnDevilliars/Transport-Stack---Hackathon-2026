@@ -59,26 +59,23 @@ export default function TransitMap({
 
     if (selectedOption && selectedOption.legs) {
       selectedOption.legs.forEach(leg => {
-        if (!leg.segments) return;
+        // If high-resolution road-snapped coordinates are available from OSRM, render them!
+        if (leg.roadCoordinates && leg.roadCoordinates.length > 1) {
+          leg.roadCoordinates.forEach(pt => boundsLatLngs.push(pt));
 
-        leg.segments.forEach(seg => {
-          const p1 = [seg.from.lat, seg.from.lng];
-          const p2 = [seg.to.lat, seg.to.lng];
-          boundsLatLngs.push(p1, p2);
-
-          // 1. Thick Outer Halo / Casing for High Contrast Visibility
-          const halo = L.polyline([p1, p2], {
+          // 1. Thick Outer White Halo along actual road curves (Weight 15)
+          const halo = L.polyline(leg.roadCoordinates, {
             color: '#ffffff',
-            weight: 14,
+            weight: 15,
             opacity: 0.95,
             lineCap: 'round',
             lineJoin: 'round'
           }).addTo(map);
           layersRef.current.routeHaloPolylines.push(halo);
 
-          // 2. Thick Core Route Line with Vivid Congestion Color (Weight 9)
-          const polyline = L.polyline([p1, p2], {
-            color: seg.congestionColor || '#10b981',
+          // 2. Thick Core Route Line hugging the asphalt road curves (Weight 9)
+          const polyline = L.polyline(leg.roadCoordinates, {
+            color: leg.routeColor || '#10b981',
             weight: 9,
             opacity: 0.95,
             lineCap: 'round',
@@ -87,20 +84,42 @@ export default function TransitMap({
 
           polyline.bindPopup(`
             <div style="font-family: inherit; font-size: 13px; line-height: 1.5; padding: 4px;">
-              <div style="font-weight: 800; color: #0f172a; margin-bottom: 4px;">🚏 Route Segment</div>
-              <div style="color: #334155; font-weight: 600;">${seg.from.name} ➔ ${seg.to.name}</div>
-              <div style="margin-top: 6px; display: flex; gap: 8px; font-size: 11px;">
-                <span style="background: #f1f5f9; padding: 2px 6px; border-radius: 6px; font-weight: bold;">📏 ${seg.distanceKm} km</span>
-                <span style="background: ${seg.congestionColor}20; color: ${seg.congestionColor}; padding: 2px 6px; border-radius: 6px; font-weight: bold;">⚡ ${seg.effectiveSpeedKmh} km/h</span>
-              </div>
+              <div style="font-weight: 800; color: #0f172a; margin-bottom: 4px;">🚌 Actual Delhi Road Route</div>
+              <div style="color: #334155; font-weight: 600;">${leg.routeName}</div>
               <div style="margin-top: 6px; font-size: 11px; color: #64748b;">
-                Travel Time: <b>${Math.round(seg.totalTimeMin)} mins</b> (${Math.round(seg.runningTimeMin)}m moving + ${Math.round(seg.dwellTimeMin)}m dwell)
+                Following real Delhi arterial street network & flyovers.
               </div>
             </div>
           `);
 
           layersRef.current.routePolylines.push(polyline);
-        });
+        } else if (leg.segments) {
+          // Fallback if road coordinates not generated
+          leg.segments.forEach(seg => {
+            const p1 = [seg.from.lat, seg.from.lng];
+            const p2 = [seg.to.lat, seg.to.lng];
+            boundsLatLngs.push(p1, p2);
+
+            const halo = L.polyline([p1, p2], {
+              color: '#ffffff',
+              weight: 14,
+              opacity: 0.95,
+              lineCap: 'round',
+              lineJoin: 'round'
+            }).addTo(map);
+            layersRef.current.routeHaloPolylines.push(halo);
+
+            const polyline = L.polyline([p1, p2], {
+              color: seg.congestionColor || '#10b981',
+              weight: 9,
+              opacity: 0.95,
+              lineCap: 'round',
+              lineJoin: 'round'
+            }).addTo(map);
+
+            layersRef.current.routePolylines.push(polyline);
+          });
+        }
 
         // Add Prominent Stops (Origin, Destination, Intermediate)
         if (leg.stopsSequence) {

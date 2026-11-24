@@ -6,7 +6,37 @@
 
 const DELHI_STOPS = require("../data/delhiStops");
 const DELHI_ROUTES = require("../data/delhiRoutes");
+const ROUTE_GEOMETRIES = require("../data/routeGeometries.json");
 const { evaluateSegmentTransit, calculateHaversineDistance } = require("./trafficModel");
+
+function getRoadSnappedPolyline(routeId, fromStop, toStop) {
+  const fullCoords = ROUTE_GEOMETRIES[routeId];
+  if (!fullCoords || fullCoords.length === 0) return null;
+
+  function findClosestIndex(coords, lat, lng) {
+    let bestDist = Infinity;
+    let bestIdx = 0;
+    for (let i = 0; i < coords.length; i++) {
+      const dLat = coords[i][0] - lat;
+      const dLng = coords[i][1] - lng;
+      const d = dLat * dLat + dLng * dLng;
+      if (d < bestDist) {
+        bestDist = d;
+        bestIdx = i;
+      }
+    }
+    return bestIdx;
+  }
+
+  const idxFrom = findClosestIndex(fullCoords, fromStop.lat, fromStop.lng);
+  const idxTo = findClosestIndex(fullCoords, toStop.lat, toStop.lng);
+
+  if (idxFrom <= idxTo) {
+    return fullCoords.slice(idxFrom, idxTo + 1);
+  } else {
+    return fullCoords.slice(idxTo, idxFrom + 1).reverse();
+  }
+}
 
 /**
  * Find journey plans between Origin and Destination stops
@@ -110,7 +140,8 @@ function planJourney(originId, destinationId, departureTime = "18:30") {
             stopsSequence: sequence.map(id => DELHI_STOPS[id]),
             distanceKm: totalDistanceKm,
             travelTimeMin: totalModelTimeMin,
-            segments: segmentDetails
+            segments: segmentDetails,
+            roadCoordinates: getRoadSnappedPolyline(route.id, originStop, destStop) || []
           }
         ],
         summary: {
@@ -197,7 +228,8 @@ function planJourney(originId, destinationId, departureTime = "18:30") {
                     stopsSequence: seq1.map(id => DELHI_STOPS[id]),
                     distanceKm: leg1Eval.distanceKm,
                     travelTimeMin: leg1Eval.totalTimeMin,
-                    segments: leg1Eval.segments
+                    segments: leg1Eval.segments,
+                    roadCoordinates: getRoadSnappedPolyline(routeA.id, DELHI_STOPS[originId], transferStop) || []
                   },
                   {
                     legNumber: "Transfer",
@@ -216,7 +248,8 @@ function planJourney(originId, destinationId, departureTime = "18:30") {
                     stopsSequence: seq2.map(id => DELHI_STOPS[id]),
                     distanceKm: leg2Eval.distanceKm,
                     travelTimeMin: leg2Eval.totalTimeMin,
-                    segments: leg2Eval.segments
+                    segments: leg2Eval.segments,
+                    roadCoordinates: getRoadSnappedPolyline(routeB.id, transferStop, DELHI_STOPS[destinationId]) || []
                   }
                 ],
                 summary: {
@@ -311,3 +344,4 @@ function calculateLegMetrics(seq, departureTime) {
 module.exports = {
   planJourney
 };
+
