@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Bus, Activity, ShieldCheck, Clock, Bell } from 'lucide-react';
+import { Bus, Activity, ShieldCheck, Clock, Bell, Code2, Map } from 'lucide-react';
 
-export default function Navbar() {
+export default function Navbar({ currentView = 'map', onToggleView }) {
   const [time, setTime] = useState(new Date().toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata' }));
 
   useEffect(() => {
@@ -34,8 +34,27 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Status Indicators */}
-        <div className="flex items-center gap-3 text-xs">
+        {/* Status Indicators & Docs Toggle Button */}
+        <div className="flex items-center gap-3 text-xs flex-wrap justify-center sm:justify-end">
+          {/* Hackathon APIs & Docs CTA Button */}
+          <button
+            onClick={onToggleView}
+            className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white text-emerald-800 hover:bg-emerald-50 active:scale-95 font-bold shadow-md transition border border-emerald-200 hover:shadow-lg"
+            title="View API Endpoints, Mathematical Models, and Hackathon Problem 01 Documentation"
+          >
+            {currentView === 'map' ? (
+              <>
+                <Code2 className="w-3.5 h-3.5 text-emerald-600" />
+                <span>⚡ APIs & Hackathon Spec</span>
+              </>
+            ) : (
+              <>
+                <Map className="w-3.5 h-3.5 text-emerald-600" />
+                <span>🗺️ Return to Live Map</span>
+              </>
+            )}
+          </button>
+
           <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-white shadow-sm">
             <span className="w-2 h-2 rounded-full bg-emerald-300 animate-ping" />
             <Activity className="w-3.5 h-3.5 text-emerald-200" />
