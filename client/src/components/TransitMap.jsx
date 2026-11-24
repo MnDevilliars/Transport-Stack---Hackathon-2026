@@ -11,6 +11,7 @@ export default function TransitMap({
   const mapContainerRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const layersRef = useRef({
+    routeHaloPolylines: [],
     routePolylines: [],
     stopMarkers: [],
     busMarkers: []
@@ -27,11 +28,10 @@ export default function TransitMap({
       zoomControl: true
     });
 
-    // Clean OpenStreetMap tiles with dark transit styling (Zero Watermark / 100% Free)
+    // Clean, crisp OpenStreetMap tiles (No Watermark, 100% Free)
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      maxZoom: 19,
-      className: 'map-tiles-dark'
+      maxZoom: 19
     }).addTo(map);
 
     mapInstanceRef.current = map;
@@ -48,8 +48,10 @@ export default function TransitMap({
     if (!map) return;
 
     // Clear old route layers
+    layersRef.current.routeHaloPolylines.forEach(layer => layer.remove());
     layersRef.current.routePolylines.forEach(layer => layer.remove());
     layersRef.current.stopMarkers.forEach(layer => layer.remove());
+    layersRef.current.routeHaloPolylines = [];
     layersRef.current.routePolylines = [];
     layersRef.current.stopMarkers = [];
 
@@ -64,90 +66,160 @@ export default function TransitMap({
           const p2 = [seg.to.lat, seg.to.lng];
           boundsLatLngs.push(p1, p2);
 
-          // Polyline with congestion color
+          // 1. Thick Outer Halo / Casing for High Contrast Visibility
+          const halo = L.polyline([p1, p2], {
+            color: '#ffffff',
+            weight: 14,
+            opacity: 0.95,
+            lineCap: 'round',
+            lineJoin: 'round'
+          }).addTo(map);
+          layersRef.current.routeHaloPolylines.push(halo);
+
+          // 2. Thick Core Route Line with Vivid Congestion Color (Weight 9)
           const polyline = L.polyline([p1, p2], {
-            color: seg.congestionColor || '#3b82f6',
-            weight: 6,
-            opacity: 0.9,
+            color: seg.congestionColor || '#10b981',
+            weight: 9,
+            opacity: 0.95,
             lineCap: 'round',
             lineJoin: 'round'
           }).addTo(map);
 
           polyline.bindPopup(`
-            <div style="font-family: inherit; font-size: 12px; line-height: 1.4;">
-              <b style="color: #60a5fa;">Route Segment:</b> ${seg.from.name} ➔ ${seg.to.name}<br/>
-              <b>Distance:</b> ${seg.distanceKm} km<br/>
-              <b>Traffic Speed:</b> <span style="color: ${seg.congestionColor}; font-weight: bold;">${seg.effectiveSpeedKmh} km/h</span><br/>
-              <b>Congestion:</b> ${seg.congestionLevel}<br/>
-              <b>Travel Time:</b> ${Math.round(seg.totalTimeMin)} mins (${Math.round(seg.runningTimeMin)}m moving + ${Math.round(seg.dwellTimeMin)}m dwell)
+            <div style="font-family: inherit; font-size: 13px; line-height: 1.5; padding: 4px;">
+              <div style="font-weight: 800; color: #0f172a; margin-bottom: 4px;">🚏 Route Segment</div>
+              <div style="color: #334155; font-weight: 600;">${seg.from.name} ➔ ${seg.to.name}</div>
+              <div style="margin-top: 6px; display: flex; gap: 8px; font-size: 11px;">
+                <span style="background: #f1f5f9; padding: 2px 6px; border-radius: 6px; font-weight: bold;">📏 ${seg.distanceKm} km</span>
+                <span style="background: ${seg.congestionColor}20; color: ${seg.congestionColor}; padding: 2px 6px; border-radius: 6px; font-weight: bold;">⚡ ${seg.effectiveSpeedKmh} km/h</span>
+              </div>
+              <div style="margin-top: 6px; font-size: 11px; color: #64748b;">
+                Travel Time: <b>${Math.round(seg.totalTimeMin)} mins</b> (${Math.round(seg.runningTimeMin)}m moving + ${Math.round(seg.dwellTimeMin)}m dwell)
+              </div>
             </div>
           `);
 
           layersRef.current.routePolylines.push(polyline);
         });
 
-        // Add Stop Pins for this route
+        // Add Prominent Stops (Origin, Destination, Intermediate)
         if (leg.stopsSequence) {
           leg.stopsSequence.forEach((stp, idx) => {
             const isOrigin = stp.id === originId;
             const isDestination = stp.id === destinationId;
 
-            let markerColor = '#64748b'; // default slate
-            let radius = 6;
-
             if (isOrigin) {
-              markerColor = '#10b981'; // Green
-              radius = 10;
+              // Prominent "My Location" Beacon Pin
+              const originIcon = L.divIcon({
+                className: 'origin-marker',
+                html: `
+                  <div style="position: relative; display: flex; align-items: center; justify-content: center;">
+                    <div style="
+                      position: absolute;
+                      width: 36px;
+                      height: 36px;
+                      border-radius: 50%;
+                      background: rgba(59, 130, 246, 0.3);
+                      animation: ripple 2s infinite ease-out;
+                    "></div>
+                    <div style="
+                      background: #2563eb;
+                      color: white;
+                      font-weight: 800;
+                      font-size: 11px;
+                      padding: 4px 10px;
+                      border-radius: 20px;
+                      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.5);
+                      border: 2px solid white;
+                      display: flex;
+                      align-items: center;
+                      gap: 4px;
+                      white-space: nowrap;
+                    ">
+                      <span>📍 My Location</span>
+                    </div>
+                  </div>
+                `,
+                iconSize: [110, 32],
+                iconAnchor: [55, 16]
+              });
+
+              const marker = L.marker([stp.lat, stp.lng], { icon: originIcon }).addTo(map);
+              marker.bindPopup(`<b>📍 My Boarding Location:</b><br/>${stp.name}`);
+              layersRef.current.stopMarkers.push(marker);
             } else if (isDestination) {
-              markerColor = '#ef4444'; // Red
-              radius = 10;
-            } else if (stp.isMajorHub) {
-              markerColor = '#f59e0b'; // Amber hub
-              radius = 8;
+              // Prominent "Destination" Pin
+              const destIcon = L.divIcon({
+                className: 'dest-marker',
+                html: `
+                  <div style="
+                    background: #f97316;
+                    color: white;
+                    font-weight: 800;
+                    font-size: 11px;
+                    padding: 4px 10px;
+                    border-radius: 20px;
+                    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.5);
+                    border: 2px solid white;
+                    display: flex;
+                    align-items: center;
+                    gap: 4px;
+                    white-space: nowrap;
+                  ">
+                    <span>🏁 Destination: ${stp.name.split(' ')[0]}</span>
+                  </div>
+                `,
+                iconSize: [140, 32],
+                iconAnchor: [70, 16]
+              });
+
+              const marker = L.marker([stp.lat, stp.lng], { icon: destIcon }).addTo(map);
+              marker.bindPopup(`<b>🏁 Destination:</b><br/>${stp.name}`);
+              layersRef.current.stopMarkers.push(marker);
+            } else {
+              // Clean Intermediate Stop Pin
+              const marker = L.circleMarker([stp.lat, stp.lng], {
+                radius: stp.isMajorHub ? 7 : 5,
+                fillColor: '#ffffff',
+                color: '#0f172a',
+                weight: 2.5,
+                opacity: 1,
+                fillOpacity: 1
+              }).addTo(map);
+
+              marker.bindPopup(`
+                <div style="font-size: 12px; font-weight: bold; color: #0f172a;">
+                  🚏 ${stp.name}
+                  ${stp.interchange ? `<div style="font-size: 10px; color: #64748b; font-weight: normal; margin-top: 2px;">Lines: ${stp.interchange.join(', ')}</div>` : ''}
+                </div>
+              `);
+
+              layersRef.current.stopMarkers.push(marker);
             }
-
-            const marker = L.circleMarker([stp.lat, stp.lng], {
-              radius,
-              fillColor: markerColor,
-              color: '#ffffff',
-              weight: isOrigin || isDestination ? 3 : 1.5,
-              opacity: 1,
-              fillOpacity: 0.95
-            }).addTo(map);
-
-            marker.bindPopup(`
-              <div style="font-size: 12px;">
-                <b style="color: ${markerColor};">${isOrigin ? '📍 Origin: ' : isDestination ? '🏁 Destination: ' : '🚏 '}${stp.name}</b><br/>
-                <span style="color: #94a3b8; font-size: 11px;">Zone: ${stp.zone || 'Delhi Transit'}</span><br/>
-                ${stp.interchange ? `<span style="font-size: 10px; color: #cbd5e1;">Interchange: ${stp.interchange.join(', ')}</span>` : ''}
-              </div>
-            `);
-
-            layersRef.current.stopMarkers.push(marker);
           });
         }
       });
 
       // Fit map bounds to view the full journey
       if (boundsLatLngs.length > 0) {
-        map.fitBounds(boundsLatLngs, { padding: [50, 50], maxZoom: 14 });
+        map.fitBounds(boundsLatLngs, { padding: [60, 60], maxZoom: 14 });
       }
     } else if (stops && stops.length > 0) {
-      // Display all Delhi stops as subtle dots
+      // Display all Delhi stops
       stops.forEach(stp => {
         const marker = L.circleMarker([stp.lat, stp.lng], {
           radius: stp.isMajorHub ? 6 : 4,
-          fillColor: stp.isMajorHub ? '#3b82f6' : '#475569',
-          color: '#0f172a',
-          weight: 1,
-          opacity: 0.8,
-          fillOpacity: 0.8
+          fillColor: stp.isMajorHub ? '#10b981' : '#94a3b8',
+          color: '#ffffff',
+          weight: 2,
+          opacity: 1,
+          fillOpacity: 1
         }).addTo(map);
 
         marker.bindPopup(`
-          <div style="font-size: 12px;">
-            <b>🚏 ${stp.name}</b><br/>
-            <span style="color: #94a3b8; font-size: 11px;">Zone: ${stp.zone}</span>
+          <div style="font-size: 12px; font-weight: bold;">
+            🚏 ${stp.name}<br/>
+            <span style="color: #64748b; font-size: 11px; font-weight: normal;">Zone: ${stp.zone}</span>
           </div>
         `);
 
@@ -156,7 +228,7 @@ export default function TransitMap({
     }
   }, [selectedOption, stops, originId, destinationId]);
 
-  // Update Live Buses
+  // Update Live Buses with Proper SVG Bus Icons
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map) return;
@@ -167,44 +239,90 @@ export default function TransitMap({
 
     if (liveBuses && liveBuses.length > 0) {
       liveBuses.forEach(bus => {
+        const busColor = bus.routeColor || '#10b981';
+
+        // Proper SVG Bus Icon inside a modern floating card (Matching Image 2 Reference)
         const customIcon = L.divIcon({
-          className: 'custom-bus-icon',
+          className: 'custom-bus-marker',
           html: `
             <div style="
               display: flex;
               align-items: center;
-              gap: 4px;
-              background: #0f172a;
-              border: 1.5px solid ${bus.routeColor || '#3b82f6'};
+              background: #ffffff;
+              border: 2px solid ${busColor};
               border-radius: 9999px;
-              padding: 2px 6px;
-              color: white;
-              font-size: 10px;
-              font-family: monospace;
-              font-weight: bold;
-              box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+              padding: 3px 8px 3px 6px;
+              box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+              cursor: pointer;
               white-space: nowrap;
+              gap: 5px;
             ">
-              <span>🚌</span>
-              <span style="color: ${bus.routeColor || '#60a5fa'}">${bus.routeNumber}</span>
-              <span style="background: rgba(255,255,255,0.15); padding: 0 3px; border-radius: 4px; font-size: 9px;">${bus.speedKmh}k</span>
+              <!-- SVG Bus Icon -->
+              <div style="
+                background: ${busColor};
+                color: white;
+                width: 22px;
+                height: 22px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+              ">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M8 6v6"/>
+                  <path d="M15 6v6"/>
+                  <path d="M2 12h19.6"/>
+                  <path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.6-.4-1.2-.8-1.5-.7-.5-1.7-.5-2.2-.5H4c-.5 0-1.5 0-2.2.5-.4.3-.8.9-.8 1.5 0 .4.1.8.2 1.2.3 1.1.8 2.8.8 2.8h3"/>
+                  <circle cx="7" cy="18" r="2"/>
+                  <circle cx="17" cy="18" r="2"/>
+                </svg>
+              </div>
+
+              <!-- Route Number -->
+              <span style="
+                font-family: monospace;
+                font-size: 11px;
+                font-weight: 800;
+                color: #0f172a;
+              ">
+                ${bus.routeNumber}
+              </span>
+
+              <!-- Live Speed Badge -->
+              <span style="
+                background: #ecfdf5;
+                color: #047857;
+                border: 1px solid #a7f3d0;
+                border-radius: 6px;
+                padding: 1px 4px;
+                font-size: 9px;
+                font-weight: 700;
+                font-family: monospace;
+              ">
+                ${bus.speedKmh}k
+              </span>
             </div>
           `,
-          iconSize: [60, 24],
-          iconAnchor: [30, 12]
+          iconSize: [88, 30],
+          iconAnchor: [44, 15]
         });
 
         const busMarker = L.marker([bus.currentLat, bus.currentLng], { icon: customIcon }).addTo(map);
 
         busMarker.bindPopup(`
-          <div style="font-size: 12px; line-height: 1.4;">
-            <b style="color: #60a5fa;">DTC Fleet Telemetry</b><br/>
-            <b>Vehicle:</b> ${bus.vehicleId}<br/>
-            <b>Route:</b> ${bus.routeNumber} (${bus.routeName})<br/>
-            <b>Live GPS Speed:</b> <b style="color: #22c55e;">${bus.speedKmh} km/h</b><br/>
-            <b>Next Stop:</b> ${bus.nextStop}<br/>
-            <b>Crowd Level:</b> ${bus.occupancy}<br/>
-            <b>Driver:</b> ${bus.driverName}
+          <div style="font-size: 12px; line-height: 1.5; padding: 4px;">
+            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
+              <span style="background: ${busColor}; color: white; padding: 2px 8px; border-radius: 6px; font-weight: 800; font-family: monospace;">
+                ${bus.routeNumber}
+              </span>
+              <b style="color: #0f172a;">${bus.vehicleId}</b>
+            </div>
+            <div style="color: #475569; font-size: 11px;"><b>Route:</b> ${bus.routeName}</div>
+            <div style="color: #047857; font-weight: bold; margin-top: 4px;">⚡ GPS Speed: ${bus.speedKmh} km/h</div>
+            <div style="color: #475569; font-size: 11px;"><b>Next Stop:</b> ${bus.nextStop}</div>
+            <div style="color: #475569; font-size: 11px;"><b>Occupancy:</b> ${bus.occupancy}</div>
+            <div style="color: #64748b; font-size: 10px; margin-top: 4px;">Driver: ${bus.driverName}</div>
           </div>
         `);
 
@@ -214,35 +332,34 @@ export default function TransitMap({
   }, [liveBuses]);
 
   return (
-    <div className="relative w-full h-full min-h-[580px] lg:min-h-[720px] rounded-2xl overflow-hidden border border-slate-800 shadow-2xl flex flex-col">
+    <div className="relative w-full h-full min-h-[580px] lg:min-h-[720px] rounded-3xl overflow-hidden border border-slate-200/90 shadow-sm flex flex-col bg-slate-50">
       <div ref={mapContainerRef} className="w-full h-full flex-1 z-10" />
 
-      {/* Map Legend Overlay */}
-      <div className="absolute bottom-4 left-4 z-20 bg-slate-900/90 backdrop-blur-md border border-slate-800 px-3.5 py-2.5 rounded-xl text-xs space-y-1.5 shadow-xl pointer-events-none">
-        <span className="font-bold text-[10px] uppercase tracking-wider text-slate-400 block">
-          Traffic Velocity Model
+      {/* Map Legend Overlay (Clean White Card matching Image 2) */}
+      <div className="absolute bottom-5 left-5 z-20 bg-white/95 backdrop-blur-md border border-slate-200 px-4 py-3 rounded-2xl text-xs space-y-2 shadow-lg pointer-events-none">
+        <span className="font-extrabold text-[10px] uppercase tracking-wider text-slate-500 block">
+          Track Congestion Speed
         </span>
-        <div className="flex items-center gap-4 text-[11px]">
+        <div className="flex items-center gap-4 text-[11px] font-semibold text-slate-700">
           <span className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" /> &gt;25 km/h
+            <span className="w-3 h-3 rounded-full bg-emerald-500 shadow-sm" /> &gt;25 km/h
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-amber-500" /> 15-25 km/h
+            <span className="w-3 h-3 rounded-full bg-amber-500 shadow-sm" /> 15-25 km/h
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-red-500" /> &lt;15 km/h (Gridlock)
+            <span className="w-3 h-3 rounded-full bg-red-500 shadow-sm" /> &lt;15 km/h (Peak Gridlock)
           </span>
         </div>
       </div>
 
       {/* Live Fleet Counter Overlay */}
-      <div className="absolute top-4 right-4 z-20 bg-slate-900/90 backdrop-blur-md border border-slate-800 px-3 py-1.5 rounded-xl text-xs flex items-center gap-2 shadow-xl">
-        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-        <span className="text-slate-300 font-mono text-[11px]">
-          {liveBuses?.length || 0} DTC Buses Live
+      <div className="absolute top-5 right-5 z-20 bg-white/95 backdrop-blur-md border border-slate-200 px-3.5 py-2 rounded-2xl text-xs flex items-center gap-2.5 shadow-md">
+        <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+        <span className="text-slate-700 font-extrabold text-xs">
+          {liveBuses?.length || 0} DTC Buses Live on Map
         </span>
       </div>
     </div>
   );
 }
-

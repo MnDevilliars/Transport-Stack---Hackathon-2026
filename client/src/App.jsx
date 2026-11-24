@@ -105,7 +105,7 @@ export default function App() {
   );
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#0b0f19] text-slate-100 selection:bg-blue-500/30 selection:text-blue-200">
+    <div className="flex flex-col min-h-screen bg-[#f8fafc] text-slate-900 selection:bg-emerald-500/20 selection:text-emerald-800">
       <Navbar />
       <CorridorTicker corridors={corridors} />
 
@@ -126,8 +126,8 @@ export default function App() {
           />
 
           {errorMsg && (
-            <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-300 text-xs flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 flex-shrink-0" />
+            <div className="p-4 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2 font-medium">
+              <AlertCircle className="w-4 h-4 flex-shrink-0 text-red-500" />
               <span>{errorMsg}</span>
             </div>
           )}
@@ -161,7 +161,7 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-slate-950 border-t border-slate-900 py-4 px-6 text-center text-xs text-slate-500">
+      <footer className="bg-white border-t border-slate-200 py-4 px-6 text-center text-xs text-slate-500 font-medium">
         <p>
           TransitPulse Delhi • Built for <b>Transport Stack Hackathon 2026 (Problem 1)</b> • Data: Delhi Transport Corporation (DTC) & OpenStreetMap
         </p>

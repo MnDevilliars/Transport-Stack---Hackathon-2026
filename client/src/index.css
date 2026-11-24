@@ -8,51 +8,67 @@
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0f172a;
+  background: #f1f5f9;
 }
 ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: #cbd5e1;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: #94a3b8;
 }
 
-/* Leaflet Dark Theme Overrides */
+/* Leaflet Container */
 .leaflet-container {
-  background-color: #0b0f19 !important;
+  background-color: #f8fafc !important;
   font-family: inherit;
 }
 
-/* Custom dark tile filter for clean modern look with zero watermark */
-.map-tiles-dark {
-  filter: brightness(0.62) invert(1) contrast(2.5) hue-rotate(205deg) saturate(0.35);
-}
-
-.dark-tiles .leaflet-tile {
-  filter: brightness(0.65) invert(1) contrast(2.8) hue-rotate(200deg) saturate(0.35);
-}
-
+/* Clean Popups */
 .leaflet-popup-content-wrapper {
-  background: #1e293b !important;
-  color: #f8fafc !important;
-  border: 1px solid #334155;
-  border-radius: 0.75rem !important;
-  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.5) !important;
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem !important;
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1) !important;
+  padding: 4px;
 }
 
 .leaflet-popup-tip {
-  background: #1e293b !important;
+  background: #ffffff !important;
 }
 
-/* Pulse animation for live markers */
-@keyframes markerPulse {
-  0% { transform: scale(0.95); opacity: 0.8; }
-  50% { transform: scale(1.15); opacity: 1; }
-  100% { transform: scale(0.95); opacity: 0.8; }
+/* User Location Ripple Beacon */
+@keyframes ripple {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(2.2);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(3.0);
+    opacity: 0;
+  }
 }
 
-.live-pulse {
-  animation: markerPulse 2s infinite ease-in-out;
+.beacon-ring {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #3b82f6;
+  animation: ripple 2s infinite ease-out;
+  pointer-events: none;
 }
 
+/* Bus Marker Shadow & Hover */
+.custom-bus-marker {
+  transition: transform 0.2s ease-in-out;
+}
+.custom-bus-marker:hover {
+  transform: scale(1.12);
+  z-index: 9999 !important;
+}
